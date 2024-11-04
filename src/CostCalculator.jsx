@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 
 function CostCalculator() {
 
-  const [edvinIncome, setEdvinIncome] = useState(0);
-  const [elinoreIncome, setElinoreIncome] = useState(0);
+  const [edvinIncome, setEdvinIncome] = useState();
+  const [elinoreIncome, setElinoreIncome] = useState();
+
+  const [rent, setRent] = useState(0);
+
 
   function handleEdvinIncomeChange(event) {
     setEdvinIncome(parseFloat(event.target.value));
@@ -12,6 +15,10 @@ function CostCalculator() {
   function handleElinoreIncomeChange(event) {
     setElinoreIncome(parseFloat(event.target.value));
   }
+
+  const totalIncome = parseFloat(edvinIncome) > 0 || parseFloat(elinoreIncome) > 0
+    ? (parseFloat(edvinIncome) || 0) + (parseFloat(elinoreIncome) || 0)
+    : 0;
 
   return( <div>
             <h1>Cost Calculator</h1>
@@ -24,7 +31,7 @@ function CostCalculator() {
                 Elinore: <input type="number" value={elinoreIncome} onChange={handleElinoreIncomeChange} />kr
               </li>
               <li>
-                Total: {edvinIncome + elinoreIncome}kr
+                Total: {totalIncome} kr
               </li>
             </ul>
           </div>);
