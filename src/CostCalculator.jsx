@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 function CostCalculator() {
 
@@ -94,8 +94,8 @@ function CostCalculator() {
               <div>
                 <h2>Split Expenses</h2>
                 <ul>
-                  <li>Edvin's Share: {edvinExpenses} kr ({(edvinShare * 100).toFixed(2)}%)</li>
-                  <li>Elinore's Share: {elinoreExpenses} kr ({(elinoreShare * 100).toFixed(2)}%)</li>
+                  <li>Edvin&#39;s Share: {edvinExpenses} kr ({(edvinShare * 100).toFixed(2)}%)</li>
+                  <li>Elinore&#39;s Share: {elinoreExpenses} kr ({(elinoreShare * 100).toFixed(2)}%)</li>
                 </ul>
               </div>
             )}
