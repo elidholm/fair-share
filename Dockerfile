@@ -3,7 +3,7 @@ ARG NODE_VERSION=20
 
 FROM node:${NODE_VERSION}-alpine
 
-LABEL org.opencontainers.image.source=https://github.com/elidholm/fair-share
+LABEL org.opencontainers.image.source=https://github.com/elidholm/fairshare
 LABEL org.opencontainers.image.description="A simple web app for splitting expenses between friends."
 LABEL org.opencontainers.image.licenses=APACHE-2.0
 

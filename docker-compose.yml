@@ -20,13 +20,13 @@ services:
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
-  fair-share:
-    image: ghcr.io/elidholm/fair-share
+  fairshare:
+    image: ghcr.io/elidholm/fairshare
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.fair-share.rule=Host(`fairshare.fun`)"
-      - "traefik.http.routers.fair-share.entrypoints=websecure"
-      - "traefik.http.routers.fair-share.tls.certresolver=myresolver"
+      - "traefik.http.routers.fairshare.rule=Host(`fairshare.fun`)"
+      - "traefik.http.routers.fairshare.entrypoints=websecure"
+      - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
     ports:
       - "3000-3010:3000"
     volumes:
