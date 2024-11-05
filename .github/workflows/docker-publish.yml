@@ -34,4 +34,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/elidholm/fairshare:latest
+          tags: ghcr.io/elidholm/fairshare:prod

@@ -1,5 +1,13 @@
 ---
 services:
+  watchtower:
+    image: containrrr/watchtower
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "30"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   reverse-proxy:
     image: traefik:v3.1
     command:
@@ -21,12 +29,13 @@ services:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
   fairshare:
-    image: ghcr.io/elidholm/fairshare
+    image: ghcr.io/elidholm/fairshare:prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.fairshare.rule=Host(`fairshare.fun`)"
       - "traefik.http.routers.fairshare.entrypoints=websecure"
       - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
+      - "com.centurylinklabs.watchtower.enable=true"
     ports:
       - "3000-3010:3000"
     volumes:
