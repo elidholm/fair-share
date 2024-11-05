@@ -1,11 +1,11 @@
 ---
+version: "3.8"
 services:
   fair-share:
     image: ghcr.io/elidholm/fair-share
     container_name: fair-share
     ports:
-      - 5173:5173
+      - 3000:3000
     volumes:
       - .:/app  # Mounts the current directory into the container's /app for live updates
       - /app/node_modules  # Ensures node_modules is isolated inside the container
-    command: ["npm", "run", "dev"]
