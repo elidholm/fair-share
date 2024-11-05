@@ -35,12 +35,15 @@ services:
       - "traefik.http.routers.fairshare.entrypoints=websecure"
       - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
       - "com.centurylinklabs.watchtower.enable=true"
+    ports:
+      - "3000:3000"
     volumes:
       - .:/app  # Mounts the current directory into the container's /app for live updates
       - /app/node_modules  # Ensures node_modules is isolated inside the container
     deploy:
       mode: replicated
       replicas: 3
+      endpoint_mode: vip
 
 volumes:
   letsencrypt:
