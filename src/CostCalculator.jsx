@@ -16,42 +16,34 @@ function CostCalculator() {
 
 
   function handleEdvinIncomeChange(event) {
-    setShowSplit(false);
     setEdvinIncome(parseFloat(event.target.value));
   }
 
   function handleElinoreIncomeChange(event) {
-    setShowSplit(false);
     setElinoreIncome(parseFloat(event.target.value));
   }
 
   function handleRentChange(event) {
-    setShowSplit(false);
     setRent(parseFloat(event.target.value));
   }
 
   function handleParkingChange(event) {
-    setShowSplit(false);
     setParking(parseFloat(event.target.value));
   }
 
   function handleInsuranceChange(event) {
-    setShowSplit(false);
     setInsurance(parseFloat(event.target.value));
   }
 
   function handleElectricityChange(event) {
-    setShowSplit(false);
     setElectricity(parseFloat(event.target.value));
   }
 
   function handleElectricGridChange(event) {
-    setShowSplit(false);
     setElectricGrid(parseFloat(event.target.value));
   }
 
   function handleInternetChange(event) {
-    setShowSplit(false);
     setInternet(parseFloat(event.target.value));
   }
 
