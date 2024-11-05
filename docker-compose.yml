@@ -12,7 +12,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
   fair-share:
     image: ghcr.io/elidholm/fair-share
-    container_name: fair-share
+    labels:
+      - "traefik.http.routers.fair-share.rule=Host(`fair-share.fun`)"
     ports:
       - "3000:3000"
     volumes:
