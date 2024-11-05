@@ -6,12 +6,12 @@ services:
       - "--label-enable"
       - "--interval"
       - "30"
+      - "--rolling-restart"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   reverse-proxy:
     image: traefik:v3.1
     command:
-      - "--api.insecure=true"
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.websecure.address=:443"
@@ -24,7 +24,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
