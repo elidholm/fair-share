@@ -27,6 +27,8 @@ services:
       - "traefik.http.routers.fair-share.rule=Host(`fairshare.fun`)"
       - "traefik.http.routers.fair-share.entrypoints=websecure"
       - "traefik.http.routers.fair-share.tls.certresolver=myresolver"
+    ports:
+      - "3000-3010:3000"
     volumes:
       - .:/app  # Mounts the current directory into the container's /app for live updates
       - /app/node_modules  # Ensures node_modules is isolated inside the container
