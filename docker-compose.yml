@@ -24,7 +24,7 @@ services:
     image: ghcr.io/elidholm/fair-share
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.fair-share.rule=Host(`fair-share.fun`)"
+      - "traefik.http.routers.fair-share.rule=Host(`fairshare.fun`)"
       - "traefik.http.routers.fair-share.entrypoints=websecure"
       - "traefik.http.routers.fair-share.tls.certresolver=myresolver"
     volumes:
