@@ -36,6 +36,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
     ports:
       - "3000:3000"
+    volumes:
       - /app/node_modules  # Ensures node_modules is isolated inside the container
 
 volumes:
