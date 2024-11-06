@@ -56,6 +56,8 @@ function CostCalculator() {
             <div className="text">{income.name}</div>
             <input
               type="number"
+              pattern="[0-9]*"
+              inputMode="numeric"
               value={income.amount === '' ? '' : income.amount}
               onChange={(event) => handleIncomeChange(event, index)}
             />kr
@@ -71,6 +73,8 @@ function CostCalculator() {
             <div className="text">{expense.name}</div>
             <input
               type="number"
+              pattern="[0-9]*"
+              inputMode="numeric"
               value={expense.amount === '' ? '' : expense.amount}
               onChange={(event) => handleExpenseChange(event, index)}
             />kr
