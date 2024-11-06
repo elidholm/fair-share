@@ -3,7 +3,7 @@ function Footer() {
 
   return (
     <footer>
-      <p>CopyRight &copy; {currentYear} Edvin Lidholm</p>
+      <p>FairShare &nbsp; &mdash; &nbsp; &copy; {currentYear} Edvin Lidholm</p>
     </footer>
   )
 }

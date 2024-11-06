@@ -1,15 +1,25 @@
-body{
-  align-items: center;
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
   background-color: hsl(210, 80%, 90%);
 }
-.cost-calculator{
-  font-family: Arial, sans-serif;
+#app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0px 24px;
 }
-h1{
+.cost-calculator {
+  font-family: Arial, sans-serif;
+  flex: 1;
+}
+h1 {
   text-align: center;
   font-size: 3rem;
 }
-button{
+button {
   font-size: 1.5rem;
   font-weight: bold;
   padding: 10px 20px;
@@ -19,25 +29,25 @@ button{
   cursor: pointer;
   transition: background-color 0.5 ease;
 }
-.split-button{
+.split-button {
   background-color: hsl(210, 80%, 70%);
 }
-.split-button:hover{
+.split-button:hover {
   background-color: hsl(210, 80%, 60%);
 }
-input[type="number"]{
+input[type="number"] {
   font-size: 1rem;
   padding: 5px;
   border: 2px solid hsla(0, 0%, 80%, 0.5);
   border-radius: 5px;
   color: hsla(0, 0%, 0%, 0.8);
 }
-ul{
+ul {
   padding: 0;
   width: 70%;
   max-width: 500px;
 }
-li{
+li {
   font-size: 1rem;
   font-weight: bold;
   padding: 5px;
@@ -45,6 +55,9 @@ li{
   display: flex;
   align-items: center;
 }
-.text{
+.text {
   flex: 1;
+}
+footer {
+  text-align: center;
 }

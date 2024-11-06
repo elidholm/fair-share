@@ -3,7 +3,7 @@ import Footer from './Footer.jsx';
 
 function App() {
   return (
-    <div>
+    <div id="app-container">
       <CostCalculator />
       <Footer />
     </div>
