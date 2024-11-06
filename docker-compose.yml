@@ -36,8 +36,6 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app  # Mounts the current directory into the container's /app for live updates
       - /app/node_modules  # Ensures node_modules is isolated inside the container
 
 volumes:

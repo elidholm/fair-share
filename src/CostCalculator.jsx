@@ -67,28 +67,28 @@ function CostCalculator() {
   const edvinExpenses = (totalExpenses * edvinShare).toFixed(2);
   const elinoreExpenses = (totalExpenses * elinoreShare).toFixed(2);
 
-  return( <div>
+  return( <div className="cost-calculator">
             <h1>Cost Calculator</h1>
 
             <h2>Incomes</h2>
             <ul>
-              <li>Edvin: <input type="number" value={edvinIncome} onChange={handleEdvinIncomeChange} /> kr</li>
-              <li>Elinore: <input type="number" value={elinoreIncome} onChange={handleElinoreIncomeChange} /> kr</li>
+              <li><div className="text">Edvin</div><input type="number" value={edvinIncome} onChange={handleEdvinIncomeChange} />kr</li>
+              <li><div className="text">Elinore</div><input type="number" value={elinoreIncome} onChange={handleElinoreIncomeChange} />kr</li>
               <li>Total: {totalIncome} kr</li>
             </ul>
 
             <h2>Expenses</h2>
             <ul>
-              <li>Rent: <input type="number" value={rent} onChange={handleRentChange} /> kr</li>
-              <li>Parking: <input type="number" value={parking} onChange={handleParkingChange} /> kr</li>
-              <li>Insurance: <input type="number" value={insurance} onChange={handleInsuranceChange} /> kr</li>
-              <li>Electricity: <input type="number" value={electricity} onChange={handleElectricityChange} /> kr</li>
-              <li>Electric Grid: <input type="number" value={electricGrid} onChange={handleElectricGridChange} /> kr </li>
-              <li>Internet: <input type="number" value={internet} onChange={handleInternetChange} /> kr</li>
+              <li><div className="text">Rent</div><input type="number" value={rent} onChange={handleRentChange} />kr</li>
+              <li><div className="text">Parking</div><input type="number" value={parking} onChange={handleParkingChange} />kr</li>
+              <li><div className="text">Insurance</div><input type="number" value={insurance} onChange={handleInsuranceChange} />kr</li>
+              <li><div className="text">Electricity</div><input type="number" value={electricity} onChange={handleElectricityChange} />kr</li>
+              <li><div className="text">Electric Grid</div><input type="number" value={electricGrid} onChange={handleElectricGridChange} />kr</li>
+              <li><div className="text">Internet</div><input type="number" value={internet} onChange={handleInternetChange} />kr</li>
               <li>Total: {totalExpenses} kr</li>
             </ul>
 
-            <button onClick={handleSplitExpenses}>Split Expenses</button>
+            <button className="split-button" onClick={handleSplitExpenses}>Split Expenses</button>
 
             {showSplit && (
               <div>

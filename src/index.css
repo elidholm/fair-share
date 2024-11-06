@@ -1,0 +1,50 @@
+body{
+  align-items: center;
+  background-color: hsl(210, 80%, 90%);
+}
+.cost-calculator{
+  font-family: Arial, sans-serif;
+}
+h1{
+  text-align: center;
+  font-size: 3rem;
+}
+button{
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.5 ease;
+}
+.split-button{
+  background-color: hsl(210, 80%, 70%);
+}
+.split-button:hover{
+  background-color: hsl(210, 80%, 60%);
+}
+input[type="number"]{
+  font-size: 1rem;
+  padding: 5px;
+  border: 2px solid hsla(0, 0%, 80%, 0.5);
+  border-radius: 5px;
+  color: hsla(0, 0%, 0%, 0.8);
+}
+ul{
+  padding: 0;
+  width: 70%;
+  max-width: 500px;
+}
+li{
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 5px;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+}
+.text{
+  flex: 1;
+}
