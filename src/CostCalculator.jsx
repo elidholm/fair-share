@@ -2,104 +2,99 @@ import { useState } from 'react';
 
 function CostCalculator() {
 
-  const [edvinIncome, setEdvinIncome] = useState();
-  const [elinoreIncome, setElinoreIncome] = useState();
+  const [incomes, setIncomes] = useState([
+    { name: 'Edvin', amount: '' },
+    { name: 'Elinore', amount: '' },
+  ]);
 
-  const [rent, setRent] = useState();
-  const [parking, setParking] = useState(1150);
-  const [insurance, setInsurance] = useState(139);
-  const [electricity, setElectricity] = useState();
-  const [electricGrid, setElectricGrid] = useState();
-  const [internet, setInternet] = useState(419);
+  function handleIncomeChange(event, index) {
+    const value = event.target.value;
+    const updatedIncomes = [...incomes];
+    updatedIncomes[index].amount = value === '' ? '' : parseFloat(value);
+    setIncomes(updatedIncomes);
+  }
+
+  const [expenses, setExpenses] = useState([
+    { name: 'Rent', amount: '' },
+    { name: 'Parking', amount: 1150 },
+    { name: 'Insurance', amount: 139 },
+    { name: 'Electricity', amount: '' },
+    { name: 'Electric Grid', amount: '' },
+    { name: 'Internet', amount: 419 },
+  ]);
+
+  function handleExpenseChange(event, index) {
+    const value = event.target.value;
+    const updatedExpenses = [...expenses];
+    updatedExpenses[index].amount = value === '' ? '' : parseFloat(value);
+    setExpenses(updatedExpenses);
+  }
 
   const [showSplit, setShowSplit] = useState(false);
-
-
-  function handleEdvinIncomeChange(event) {
-    setEdvinIncome(parseFloat(event.target.value));
-  }
-
-  function handleElinoreIncomeChange(event) {
-    setElinoreIncome(parseFloat(event.target.value));
-  }
-
-  function handleRentChange(event) {
-    setRent(parseFloat(event.target.value));
-  }
-
-  function handleParkingChange(event) {
-    setParking(parseFloat(event.target.value));
-  }
-
-  function handleInsuranceChange(event) {
-    setInsurance(parseFloat(event.target.value));
-  }
-
-  function handleElectricityChange(event) {
-    setElectricity(parseFloat(event.target.value));
-  }
-
-  function handleElectricGridChange(event) {
-    setElectricGrid(parseFloat(event.target.value));
-  }
-
-  function handleInternetChange(event) {
-    setInternet(parseFloat(event.target.value));
-  }
 
   function handleSplitExpenses() {
     setShowSplit(true);
   }
 
-  const
-    totalIncome = parseFloat(edvinIncome) > 0 || parseFloat(elinoreIncome) > 0
-    ? (parseFloat(edvinIncome) || 0) + (parseFloat(elinoreIncome) || 0)
-    : 0;
+  const totalIncome = incomes.reduce((sum, income) => sum + (parseFloat(income.amount) || 0), 0);
+  const totalExpenses = expenses.reduce((sum, expense) => sum + (parseFloat(expense.amount) || 0), 0);
 
-  const
-    totalExpenses = parseFloat(rent) > 0 || parseFloat(parking) > 0 || parseFloat(insurance) > 0 || parseFloat(electricity) > 0 || parseFloat(electricGrid) > 0 || parseFloat(internet) > 0
-    ? (parseFloat(rent) || 0) + (parseFloat(parking) || 0) + (parseFloat(insurance) || 0) + (parseFloat(electricity) || 0) + (parseFloat(electricGrid) || 0) + (parseFloat(internet) || 0)
-    : 0;
+  const expenseShares = incomes.map(income => ({
+    name: income.name,
+    share: ((income.amount / totalIncome) || 0).toFixed(2),
+    expense: ((income.amount / totalIncome) * totalExpenses).toFixed(2)
+  }));
 
-  const edvinShare = (parseFloat(edvinIncome) / totalIncome) || 0;
-  const elinoreShare = (parseFloat(elinoreIncome) / totalIncome) || 0;
+  return(
+    <div className="cost-calculator">
+      <h1>Cost Calculator</h1>
 
-  const edvinExpenses = (totalExpenses * edvinShare).toFixed(2);
-  const elinoreExpenses = (totalExpenses * elinoreShare).toFixed(2);
+      <h2>Incomes</h2>
+      <ul>
+        {incomes.map((income, index) => (
+          <li key={index}>
+            <div className="text">{income.name}</div>
+            <input
+              type="number"
+              value={income.amount === '' ? '' : income.amount}
+              onChange={(event) => handleIncomeChange(event, index)}
+            />kr
+          </li>
+        ))}
+        <li>Total: {totalIncome} kr</li>
+      </ul>
 
-  return( <div className="cost-calculator">
-            <h1>Cost Calculator</h1>
+      <h2>Expenses</h2>
+      <ul>
+        {expenses.map((expense, index) => (
+          <li key={index}>
+            <div className="text">{expense.name}</div>
+            <input
+              type="number"
+              value={expense.amount === '' ? '' : expense.amount}
+              onChange={(event) => handleExpenseChange(event, index)}
+            />kr
+          </li>
+        ))}
+        <li>Total: {totalExpenses} kr</li>
+      </ul>
 
-            <h2>Incomes</h2>
-            <ul>
-              <li><div className="text">Edvin</div><input type="number" value={edvinIncome} onChange={handleEdvinIncomeChange} />kr</li>
-              <li><div className="text">Elinore</div><input type="number" value={elinoreIncome} onChange={handleElinoreIncomeChange} />kr</li>
-              <li>Total: {totalIncome} kr</li>
-            </ul>
+      <button className="split-button" onClick={() => setShowSplit(true)}>Split Expenses</button>
 
-            <h2>Expenses</h2>
-            <ul>
-              <li><div className="text">Rent</div><input type="number" value={rent} onChange={handleRentChange} />kr</li>
-              <li><div className="text">Parking</div><input type="number" value={parking} onChange={handleParkingChange} />kr</li>
-              <li><div className="text">Insurance</div><input type="number" value={insurance} onChange={handleInsuranceChange} />kr</li>
-              <li><div className="text">Electricity</div><input type="number" value={electricity} onChange={handleElectricityChange} />kr</li>
-              <li><div className="text">Electric Grid</div><input type="number" value={electricGrid} onChange={handleElectricGridChange} />kr</li>
-              <li><div className="text">Internet</div><input type="number" value={internet} onChange={handleInternetChange} />kr</li>
-              <li>Total: {totalExpenses} kr</li>
-            </ul>
-
-            <button className="split-button" onClick={handleSplitExpenses}>Split Expenses</button>
-
-            {showSplit && (
-              <div>
-                <h2>Split Expenses</h2>
-                <ul>
-                  <li>Edvin&#39;s Share: {edvinExpenses} kr ({(edvinShare * 100).toFixed(2)}%)</li>
-                  <li>Elinore&#39;s Share: {elinoreExpenses} kr ({(elinoreShare * 100).toFixed(2)}%)</li>
-                </ul>
-              </div>
-            )}
-          </div>);
+      {showSplit && (
+        <div>
+          <h2>Split Expenses</h2>
+          <ul>
+            {expenseShares.map((share, index) => (
+              <li key={index}>
+                {share.name}&#39;s Share: {share.expense} kr ({(share.share * 100).toFixed(2)}%)
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default CostCalculator;
