@@ -16,7 +16,7 @@ function CostCalculator() {
 
   const [expenses, setExpenses] = useState([
     { name: 'Rent', amount: '' },
-    { name: 'Parking', amount: 1150 },
+    { name: 'Parking', amount: 1173 },
     { name: 'Insurance', amount: 139 },
     { name: 'Electricity', amount: '' },
     { name: 'Electric Grid', amount: '' },
