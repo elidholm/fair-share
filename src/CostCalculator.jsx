@@ -72,8 +72,8 @@ function CostCalculator() {
         ))}
         <li>Total: {totalIncome} kr</li>
       </ul>
+
       <ToggleSwitch id="split-mode" checked={splitMode} onChange={onSplitModeChange} />
-      <p>Split Mode: {splitMode ? 'On' : 'Off'}</p>
 
       <h2>Expenses</h2>
       <ul>
