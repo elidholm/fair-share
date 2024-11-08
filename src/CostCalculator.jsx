@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import ToggleSwitch from './ToggleSwitch.jsx';
 
 function CostCalculator() {
 
@@ -36,13 +37,19 @@ function CostCalculator() {
     setShowSplit(true);
   }
 
+  const [splitMode, setSplitMode] = useState(false);
+
+  const onSplitModeChange = (checked) => {
+    setSplitMode(checked);
+  }
+
   const totalIncome = incomes.reduce((sum, income) => sum + (parseFloat(income.amount) || 0), 0);
   const totalExpenses = expenses.reduce((sum, expense) => sum + (parseFloat(expense.amount) || 0), 0);
 
   const expenseShares = incomes.map(income => ({
     name: income.name,
-    share: ((income.amount / totalIncome) || 0).toFixed(2),
-    expense: ((income.amount / totalIncome) * totalExpenses).toFixed(2)
+    share: splitMode ? (0.5).toFixed(2) : ((income.amount / totalIncome) || 0).toFixed(2),
+    expense: splitMode ? (totalExpenses / 2).toFixed(2) : ((income.amount / totalIncome) * totalExpenses).toFixed(2)
   }));
 
   return(
@@ -65,6 +72,8 @@ function CostCalculator() {
         ))}
         <li>Total: {totalIncome} kr</li>
       </ul>
+      <ToggleSwitch id="split-mode" checked={splitMode} onChange={onSplitModeChange} />
+      <p>Split Mode: {splitMode ? 'On' : 'Off'}</p>
 
       <h2>Expenses</h2>
       <ul>
