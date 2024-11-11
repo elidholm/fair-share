@@ -116,6 +116,7 @@ function CostCalculator() {
           placeholder="Enter new income..."
           value={newIncome}
           onChange={handleNewIncomeChange}
+          onKeyDown={(event) => event.key === "Enter" && addIncome()}
         />
         <button className="add-button" onClick={addIncome}>+</button>
       </div>
@@ -145,6 +146,7 @@ function CostCalculator() {
           placeholder="Enter new expense..."
           value={newExpense}
           onChange={handleNewExpenseChange}
+          onKeyDown={(event) => event.key === "Enter" && addExpense()}
         />
         <button className="add-button" onClick={addExpense}>+</button>
       </div>
