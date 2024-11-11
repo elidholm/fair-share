@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './ToggleSwitch.scss';
+import React from "react";
+import PropTypes from "prop-types";
+import "./ToggleSwitch.scss";
 
 function ToggleSwitch({ id, name, checked, onChange, optionLabels, disabled }) {
   function handleKeyPress(e) {
@@ -10,11 +10,11 @@ function ToggleSwitch({ id, name, checked, onChange, optionLabels, disabled }) {
     onChange(!checked);
   }
   return (
-    <div className='toggle-switch'>
+    <div className="toggle-switch">
       <input
-        type='checkbox'
+        type="checkbox"
         name={name}
-        className='toggle-switch-checkbox'
+        className="toggle-switch-checkbox"
         id={id}
         checked={checked}
         onChange={e => onChange(e.target.checked)}
@@ -22,15 +22,15 @@ function ToggleSwitch({ id, name, checked, onChange, optionLabels, disabled }) {
       />
       {id ? (
         <label
-          className='toggle-switch-label'
+          className="toggle-switch-label"
           htmlFor={id}
           tabIndex={disabled ? -1 : 1}
           onKeyDown={e => handleKeyPress(e)}>
             <span
               className={
                 disabled
-                  ? 'toggle-switch-inner toggle-switch-disabled'
-                  : 'toggle-switch-inner'
+                  ? "toggle-switch-inner toggle-switch-disabled"
+                  : "toggle-switch-inner"
               }
               data-yes={optionLabels[0]}
               data-no={optionLabels[1]}
@@ -39,8 +39,8 @@ function ToggleSwitch({ id, name, checked, onChange, optionLabels, disabled }) {
             <span
               className={
                 disabled
-                  ? 'toggle-switch-switch toggle-switch-disabled'
-                  : 'toggle-switch-switch'
+                  ? "toggle-switch-switch toggle-switch-disabled"
+                  : "toggle-switch-switch"
               }
               tabIndex={-1}
             />
@@ -51,7 +51,7 @@ function ToggleSwitch({ id, name, checked, onChange, optionLabels, disabled }) {
 }
 
 ToggleSwitch.defaultProps = {
-  optionLabels: ['50/50', '%'],
+  optionLabels: ["50/50", "%"],
 };
 
 ToggleSwitch.propTypes = {

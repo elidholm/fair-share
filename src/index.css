@@ -22,19 +22,32 @@ h1 {
 button {
   font-size: 1.5rem;
   font-weight: bold;
-  padding: 10px 20px;
   color: white;
   border: none;
   border-radius: 5px;
-  width: 100%;
   cursor: pointer;
   transition: background-color 0.5 ease;
 }
 .split-button {
+  padding: 10px 20px;
+  width: 100%;
   background-color: hsl(210, 80%, 70%);
 }
 .split-button:hover {
   background-color: hsl(210, 80%, 60%);
+}
+.add-button {
+  padding: 0;
+  width: 40px;
+  background-color: hsl(120, 80%, 70%);
+}
+.add-button:hover {
+  background-color: hsl(120, 80%, 60%);
+}
+.add-income {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 input[type="number"] {
   font-size: 1rem;
@@ -43,6 +56,13 @@ input[type="number"] {
   border-radius: 5px;
   color: hsla(0, 0%, 0%, 0.8);
   max-width: 30%;
+}
+input[type="text"] {
+  font-size: 0.75rem;
+  padding: 5px;
+  border: 2px solid hsla(0, 0%, 80%, 0.5);
+  border-radius: 5px;
+  color: hsla(0, 0%, 0%, 0.8);
 }
 ul {
   padding: 0;

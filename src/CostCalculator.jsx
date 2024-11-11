@@ -1,33 +1,46 @@
-import React, { useState } from 'react';
-import ToggleSwitch from './ToggleSwitch.jsx';
+import React, { useState } from "react";
+import ToggleSwitch from "./ToggleSwitch.jsx";
 
 function CostCalculator() {
 
   const [incomes, setIncomes] = useState([
-    { name: 'Edvin', amount: '' },
-    { name: 'Elinore', amount: '' },
+    { name: "Edvin", amount: "" },
+    { name: "Elinore", amount: "" },
   ]);
 
   function handleIncomeChange(event, index) {
     const value = event.target.value;
     const updatedIncomes = [...incomes];
-    updatedIncomes[index].amount = value === '' ? '' : parseFloat(value);
+    updatedIncomes[index].amount = value === "" ? "" : parseFloat(value);
     setIncomes(updatedIncomes);
   }
 
+  const [newIncome, setNewIncome] = useState("");
+
+  function handleNewIncomeChange(event) {
+    setNewIncome(event.target.value);
+  }
+
+  function addIncome() {
+    if (newIncome.trim() !== "") {
+      setIncomes([...incomes, { name: newIncome, amount: "" }]);
+      setNewIncome("");
+    }
+  }
+
   const [expenses, setExpenses] = useState([
-    { name: 'Rent', amount: '' },
-    { name: 'Parking', amount: 1173 },
-    { name: 'Insurance', amount: 139 },
-    { name: 'Electricity', amount: '' },
-    { name: 'Electric Grid', amount: '' },
-    { name: 'Internet', amount: 419 },
+    { name: "Rent", amount: "" },
+    { name: "Parking", amount: 1173 },
+    { name: "Insurance", amount: 139 },
+    { name: "Electricity", amount: "" },
+    { name: "Electric Grid", amount: "" },
+    { name: "Internet", amount: 419 },
   ]);
 
   function handleExpenseChange(event, index) {
     const value = event.target.value;
     const updatedExpenses = [...expenses];
-    updatedExpenses[index].amount = value === '' ? '' : parseFloat(value);
+    updatedExpenses[index].amount = value === "" ? "" : parseFloat(value);
     setExpenses(updatedExpenses);
   }
 
@@ -65,13 +78,23 @@ function CostCalculator() {
               type="number"
               pattern="[0-9]*"
               inputMode="numeric"
-              value={income.amount === '' ? '' : income.amount}
+              value={income.amount === "" ? "" : income.amount}
               onChange={(event) => handleIncomeChange(event, index)}
             />kr
           </li>
         ))}
-        <li>Total: {totalIncome} kr</li>
       </ul>
+      <div className="add-income">
+        <input
+          type="text"
+          placeholder="Enter new income..."
+          value={newIncome}
+          onChange={handleNewIncomeChange}
+        />
+        <button className="add-button" onClick={addIncome}>+</button>
+      </div>
+
+      <li>Total: {totalIncome} kr</li>
 
       <ToggleSwitch id="split-mode" checked={splitMode} onChange={onSplitModeChange} />
 
@@ -84,7 +107,7 @@ function CostCalculator() {
               type="number"
               pattern="[0-9]*"
               inputMode="numeric"
-              value={expense.amount === '' ? '' : expense.amount}
+              value={expense.amount === "" ? "" : expense.amount}
               onChange={(event) => handleExpenseChange(event, index)}
             />kr
           </li>

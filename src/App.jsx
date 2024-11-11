@@ -1,5 +1,5 @@
-import CostCalculator from './CostCalculator.jsx';
-import Footer from './Footer.jsx';
+import CostCalculator from "./CostCalculator.jsx";
+import Footer from "./Footer.jsx";
 
 function App() {
   return (
