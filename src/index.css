@@ -26,7 +26,7 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.5 ease;
+  transition: background-color 0.5s ease;
 }
 .split-button {
   padding: 10px 20px;
@@ -44,10 +44,19 @@ button {
 .add-button:hover {
   background-color: hsl(120, 80%, 60%);
 }
-.add-income {
+.add-income, .add-expense {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+}
+.remove-button {
+  padding-left: 20px;
+  height: 30px;
+  background-color: transparent;
+  color: hsl(10, 90%, 50%);
+}
+.remove-button:hover {
+  color: hsl(10, 90%, 40%);
 }
 input[type="number"] {
   font-size: 1rem;
@@ -66,7 +75,7 @@ input[type="text"] {
 }
 ul {
   padding: 0;
-  width: 70%;
+  width: 100%;
   max-width: 500px;
 }
 li {
