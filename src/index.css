@@ -3,13 +3,19 @@ html, body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  background-color: hsl(210, 80%, 90%);
+  background-image: url(assets/background.jpg);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 #app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   padding: 0px 24px;
+  backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 .cost-calculator {
   font-family: Arial, sans-serif;
@@ -27,6 +33,9 @@ button {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .split-button {
   padding: 10px 20px;
@@ -38,46 +47,42 @@ button {
 }
 .add-button {
   margin: 0 5px;
-  padding: 0;
+  padding: 2px;
   width: 40px;
   background-color: hsl(120, 80%, 70%);
 }
 .add-button:hover {
-  background-color: hsl(120, 80%, 60%);
+  background-color: hsl(120, 80%, 50%);
+}
+.remove-button {
+  margin-left: 20px;
+  background-color: transparent;
+  color: hsl(10, 90%, 40%);
+}
+.remove-button:hover {
+  color: hsl(10, 90%, 30%);
 }
 .add-income, .add-expense {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
-.remove-button {
-  padding-left: 20px;
-  height: 24px;
-  background-color: transparent;
-  color: hsl(10, 90%, 50%);
-}
-.remove-button:hover {
-  color: hsl(10, 90%, 40%);
+input {
+  border: 2px solid hsla(0, 0%, 80%, 0.5);
+  padding: 5px;
+  border-radius: 5px;
+  color: hsla(0, 0%, 0%, 0.8);
 }
 input[type="number"] {
   font-size: 1rem;
-  padding: 5px;
-  border: 2px solid hsla(0, 0%, 80%, 0.5);
-  border-radius: 5px;
-  color: hsla(0, 0%, 0%, 0.8);
   max-width: 30%;
 }
 input[type="text"] {
   font-size: 0.75rem;
-  padding: 5px;
-  border: 2px solid hsla(0, 0%, 80%, 0.5);
-  border-radius: 5px;
-  color: hsla(0, 0%, 0%, 0.8);
 }
 ul {
   padding: 0;
   width: 100%;
-  max-width: 500px;
 }
 li {
   font-size: 1rem;

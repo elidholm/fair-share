@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Delete } from "react-feather";
+import { X, Plus } from "react-feather";
 import ToggleSwitch from "./ToggleSwitch.jsx";
 
 function CostCalculator() {
@@ -92,7 +92,7 @@ function CostCalculator() {
 
   return(
     <div className="cost-calculator">
-      <h1>Cost Calculator</h1>
+      <h1>FairShare</h1>
 
       <h2>Incomes</h2>
       <ul>
@@ -106,7 +106,7 @@ function CostCalculator() {
               value={income.amount === "" ? "" : income.amount}
               onChange={(event) => handleIncomeChange(event, index)}
             />kr
-            <button className="remove-button" onClick={() => deleteIncome(index)}><Delete /></button>
+            <button className="remove-button" onClick={() => deleteIncome(index)}><X /></button>
           </li>
         ))}
       </ul>
@@ -118,7 +118,7 @@ function CostCalculator() {
           onChange={handleNewIncomeChange}
           onKeyDown={(event) => event.key === "Enter" && addIncome()}
         />
-        <button className="add-button" onClick={addIncome}>+</button>
+        <button className="add-button" onClick={addIncome}><Plus /></button>
       </div>
       <li>Total: {totalIncome} kr</li>
 
@@ -136,7 +136,7 @@ function CostCalculator() {
               value={expense.amount === "" ? "" : expense.amount}
               onChange={(event) => handleExpenseChange(event, index)}
             />kr
-            <button className="remove-button" onClick={() => deleteExpense(index)}><Delete /></button>
+            <button className="remove-button" onClick={() => deleteExpense(index)}><X /></button>
           </li>
         ))}
       </ul>
@@ -148,7 +148,7 @@ function CostCalculator() {
           onChange={handleNewExpenseChange}
           onKeyDown={(event) => event.key === "Enter" && addExpense()}
         />
-        <button className="add-button" onClick={addExpense}>+</button>
+        <button className="add-button" onClick={addExpense}><Plus /></button>
       </div>
       <li>Total: {totalExpenses} kr</li>
 

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./ToggleSwitch.scss";
 
-function ToggleSwitch({ id, name, checked, onChange, optionLabels, disabled }) {
+function ToggleSwitch({ id, name, checked, onChange, optionLabels = ["50/50", "%"], disabled }) {
   function handleKeyPress(e) {
     if (e.keyCode !== 32) return;
 
@@ -49,10 +49,6 @@ function ToggleSwitch({ id, name, checked, onChange, optionLabels, disabled }) {
     </div>
   );
 }
-
-ToggleSwitch.defaultProps = {
-  optionLabels: ["50/50", "%"],
-};
 
 ToggleSwitch.propTypes = {
   id: PropTypes.string.isRequired,
