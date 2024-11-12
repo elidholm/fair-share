@@ -12,11 +12,16 @@ html, body {
   flex-direction: column;
   color: $primary-color;
   -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  -moz-osx-font-smoothing: grayscale;
   background: {
     image: url(assets/background.jpg);
     size: cover;
     attachment: fixed;
-    position: center;
+    position: center top;
     repeat: no-repeat;
   }
 }
