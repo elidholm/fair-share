@@ -1,0 +1,161 @@
+// Variables
+$primary-color: #f0f0f0;
+$background-color: rgba(0, 0, 0, 0.75);
+$button-hover-scale: 1.05;
+$shadow-color: rgba(0, 0, 0, 0.6);
+$border-radius: 5px;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  color: $primary-color;
+  -webkit-font-smoothing: antialiased;
+  background: {
+    image: url(assets/background.jpg);
+    size: cover;
+    attachment: fixed;
+    position: center;
+    repeat: no-repeat;
+  }
+}
+
+#app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0 24px;
+  backdrop-filter: blur(7px);
+  background-color: $background-color;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+  .cost-calculator {
+    font-family: Arial, sans-serif;
+    flex: 1;
+  }
+}
+
+h1 {
+  text-align: center;
+  font-size: 3rem;
+  color: #fff;
+  margin-top: 20px;
+  text-shadow: 2px 2px 4px $shadow-color;
+}
+
+button {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  text-shadow: 1px 1px 2px $shadow-color;
+
+  &:hover {
+    transform: scale($button-hover-scale);
+  }
+
+  &.split-button {
+    width: 100%;
+    background-color: hsl(210, 70%, 50%);
+
+    &:hover {
+      background-color: hsl(210, 70%, 60%);
+      transform: scale(1.01);
+    }
+  }
+
+  &.add-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: hsl(120, 70%, 45%);
+    color: #fff;
+
+    &:hover {
+      background-color: hsl(120, 70%, 55%);
+    }
+  }
+
+  &.remove-button {
+    background-color: transparent;
+    color: hsl(10, 80%, 50%);
+
+    &:hover {
+      color: hsl(10, 80%, 40%);
+    }
+  }
+}
+
+.add-income,
+.add-expense {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+input {
+  border: 1px solid hsla(0, 0%, 80%, 0.3);
+  padding: 8px;
+  border-radius: $border-radius;
+  color: $primary-color;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: border-color 0.3s ease;
+
+  &[type="number"] {
+    font-size: 1rem;
+    max-width: 30%;
+    margin-right: 10px;
+  }
+
+  &[type="text"] {
+    font-size: 0.85rem;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: hsl(210, 70%, 50%);
+  }
+}
+
+ul {
+  padding: 0;
+  width: 100%;
+  list-style: none;
+}
+
+li {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 8px 10px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: $border-radius;
+  color: #e0e0e0;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.text {
+  flex: 1;
+}
+
+footer {
+  text-align: center;
+  padding: 20px 0;
+  color: #cccccc;
+  font-size: 0.9rem;
+  text-shadow: 1px 1px 2px $shadow-color;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+

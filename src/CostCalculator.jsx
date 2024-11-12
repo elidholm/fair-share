@@ -120,7 +120,7 @@ function CostCalculator() {
         />
         <button className="add-button" onClick={addIncome}><Plus /></button>
       </div>
-      <li>Total: {totalIncome} kr</li>
+      <h3>Total: {totalIncome} kr</h3>
 
       <ToggleSwitch id="split-mode" checked={splitMode} onChange={onSplitModeChange} />
 
@@ -150,7 +150,7 @@ function CostCalculator() {
         />
         <button className="add-button" onClick={addExpense}><Plus /></button>
       </div>
-      <li>Total: {totalExpenses} kr</li>
+      <h3>Total: {totalExpenses} kr</h3>
 
       <button className="split-button" onClick={() => setShowSplit(true)}>Split Expenses</button>
 
