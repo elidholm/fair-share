@@ -3,12 +3,24 @@ import { X, Plus } from "react-feather";
 import ToggleSwitch from "./ToggleSwitch.jsx";
 
 function CostCalculator() {
-
   const [incomes, setIncomes] = useState([
     { name: "Edvin", amount: "" },
     { name: "Elinore", amount: "" },
   ]);
+  const [newIncome, setNewIncome] = useState("");
+  const [expenses, setExpenses] = useState([
+    { name: "Rent", amount: "" },
+    { name: "Parking", amount: 1173 },
+    { name: "Insurance", amount: 139 },
+    { name: "Electricity", amount: "" },
+    { name: "Electric Grid", amount: "" },
+    { name: "Internet", amount: 419 },
+  ]);
+  const [newExpense, setNewExpense] = useState("");
+  const [splitMode, setSplitMode] = useState(false);
+  const [showSplit, setShowSplit] = useState(false);
 
+  // Handlers for incomes and expenses
   function handleIncomeChange(event, index) {
     const value = event.target.value;
     const updatedIncomes = [...incomes];
@@ -16,7 +28,12 @@ function CostCalculator() {
     setIncomes(updatedIncomes);
   }
 
-  const [newIncome, setNewIncome] = useState("");
+  function handleExpenseChange(event, index) {
+    const value = event.target.value;
+    const updatedExpenses = [...expenses];
+    updatedExpenses[index].amount = value === "" ? "" : parseFloat(value);
+    setExpenses(updatedExpenses);
+  }
 
   function handleNewIncomeChange(event) {
     setNewIncome(event.target.value);
@@ -34,23 +51,6 @@ function CostCalculator() {
     setIncomes(updatedIncomes);
   }
 
-  const [expenses, setExpenses] = useState([
-    { name: "Rent", amount: "" },
-    { name: "Parking", amount: 1173 },
-    { name: "Insurance", amount: 139 },
-    { name: "Electricity", amount: "" },
-    { name: "Electric Grid", amount: "" },
-    { name: "Internet", amount: 419 },
-  ]);
-
-  function handleExpenseChange(event, index) {
-    const value = event.target.value;
-    const updatedExpenses = [...expenses];
-    updatedExpenses[index].amount = value === "" ? "" : parseFloat(value);
-    setExpenses(updatedExpenses);
-  }
-
-  const [newExpense, setNewExpense] = useState("");
 
   function handleNewExpenseChange(event) {
     setNewExpense(event.target.value);
@@ -67,15 +67,6 @@ function CostCalculator() {
     const updatedExpenses = expenses.filter((_, i) => i !== index);
     setExpenses(updatedExpenses);
   }
-
-
-  const [showSplit, setShowSplit] = useState(false);
-
-  function handleSplitExpenses() {
-    setShowSplit(true);
-  }
-
-  const [splitMode, setSplitMode] = useState(false);
 
   const onSplitModeChange = (checked) => {
     setSplitMode(checked);

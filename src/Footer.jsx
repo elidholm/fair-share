@@ -5,7 +5,7 @@ function Footer() {
     <footer>
       <p>FairShare &nbsp; &mdash; &nbsp; &copy; {currentYear} Edvin Lidholm</p>
     </footer>
-  )
+  );
 }
 
 export default Footer;
