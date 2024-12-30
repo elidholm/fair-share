@@ -1,24 +1,43 @@
-import React, { useState } from "react";
-import { X, Plus } from "react-feather";
+import React, { useState, useEffect } from "react";
+import { X, Plus, RefreshCcw } from "react-feather";
 import ToggleSwitch from "./ToggleSwitch.jsx";
 
 function CostCalculator() {
-  const [incomes, setIncomes] = useState([
+  const defaultIncomes = [
     { name: "Edvin", amount: "" },
     { name: "Elinore", amount: "" },
-  ]);
+  ];
+  const [incomes, setIncomes] = useState(() => {
+    const storedIncomes = localStorage.getItem("incomes");
+    return storedIncomes ? JSON.parse(storedIncomes) : defaultIncomes;
+  });
   const [newIncome, setNewIncome] = useState("");
-  const [expenses, setExpenses] = useState([
+
+  const defaultExpenses = [
     { name: "Rent", amount: "" },
     { name: "Parking", amount: 1173 },
     { name: "Insurance", amount: 139 },
     { name: "Electricity", amount: "" },
     { name: "Electric Grid", amount: "" },
     { name: "Internet", amount: 419 },
-  ]);
+  ];
+  const [expenses, setExpenses] = useState(() => {
+    const storedExpenses = localStorage.getItem("expenses");
+    return storedExpenses ? JSON.parse(storedExpenses) : defaultExpenses;
+  });
   const [newExpense, setNewExpense] = useState("");
+
   const [splitMode, setSplitMode] = useState(false);
   const [showSplit, setShowSplit] = useState(false);
+
+  // Save incomes and expenses to localStorage on change
+  useEffect(() => {
+    localStorage.setItem("incomes", JSON.stringify(incomes));
+  }, [incomes]);
+
+  useEffect(() => {
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  }, [expenses]);
 
   // Handlers for incomes and expenses
   function handleIncomeChange(event, index) {
@@ -41,7 +60,8 @@ function CostCalculator() {
 
   function addIncome() {
     if (newIncome.trim() !== "") {
-      setIncomes(i => [...i, { name: newIncome, amount: "" }]);
+      const updatedIncomes = [...incomes, { name: newIncome, amount: "" }];
+      setIncomes(updatedIncomes);
       setNewIncome("");
     }
   }
@@ -58,7 +78,8 @@ function CostCalculator() {
 
   function addExpense() {
     if (newExpense.trim() !== "") {
-      setExpenses(e => [...e, { name: newExpense, amount: "" }]);
+      const updatedExpenses = [...expenses, { name: newExpense, amount: "" }];
+      setExpenses(updatedExpenses);
       setNewExpense("");
     }
   }
@@ -81,9 +102,22 @@ function CostCalculator() {
     expense: splitMode ? (totalExpenses / 2).toFixed(2) : ((income.amount / totalIncome) * totalExpenses).toFixed(2)
   }));
 
+  // Clear localStorage handler
+  const handleClearStorage = () => {
+    localStorage.removeItem("incomes");
+    localStorage.removeItem("expenses");
+    setIncomes(defaultIncomes);
+    setExpenses(defaultExpenses);
+  };
+
   return(
     <div className="cost-calculator">
       <h1>FairShare</h1>
+      <button
+        className="clear-storage-button"
+        onClick={handleClearStorage}
+        title="Clear Local Storage"
+      ><RefreshCcw /></button>
 
       <h2>Incomes</h2>
       <ul>

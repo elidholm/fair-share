@@ -79,7 +79,6 @@ button {
     padding: 5px 10px;
     background-color: hsl(120, 70%, 45%);
     color: #fff;
-
     &:hover {
       background-color: hsl(120, 70%, 55%);
     }
@@ -90,6 +89,19 @@ button {
     color: hsl(10, 80%, 50%);
     &:hover {
       color: hsl(10, 80%, 40%);
+    }
+  }
+
+  &.clear-storage-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: hsl(0, 0%, 100%, 0.05);
+    &:hover {
+      background-color: hsl(0, 0%, 100%, 0.1);
+      transform: scale(1.01);
     }
   }
 }
@@ -137,6 +149,7 @@ li {
   display: flex;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.3s ease, transform 0.3s ease;
   border-radius: $border-radius;
   color: #e0e0e0;
 
