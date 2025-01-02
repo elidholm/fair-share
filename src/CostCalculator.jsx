@@ -15,11 +15,11 @@ function CostCalculator() {
 
   const defaultExpenses = [
     { name: "Rent", amount: "" },
-    { name: "Parking", amount: 1173 },
+    { name: "Parking", amount: 1196 },
     { name: "Insurance", amount: 139 },
     { name: "Electricity", amount: "" },
     { name: "Electric Grid", amount: "" },
-    { name: "Internet", amount: 419 },
+    { name: "Internet", amount: 489 },
   ];
   const [expenses, setExpenses] = useState(() => {
     const storedExpenses = localStorage.getItem("expenses");
