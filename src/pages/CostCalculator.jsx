@@ -113,7 +113,7 @@ function CostCalculator() {
 
   return(
     <div className="cost-calculator">
-      <h1>FairShare</h1>
+      <h1>Split Costs</h1>
       <button
         className="clear-storage-button"
         onClick={handleClearStorage}
@@ -182,7 +182,6 @@ function CostCalculator() {
 
       {showSplit && (
         <div>
-          <h2>Split Expenses</h2>
           <ul>
             {expenseShares.map((share, index) => (
               <li key={index}>

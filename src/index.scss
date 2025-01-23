@@ -8,6 +8,7 @@ $label-colour: #444;
 $disabled-colour: #555;
 $toggle-colour: #1db954;
 $focus-color: #3ddc97;
+$navbar-height: 80px;
 
 html, body {
   height: 100%;
@@ -30,10 +31,7 @@ html, body {
 }
 
 #app-container {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
-  padding: 0 16px 16px;
   background-color: $background-color;
   backdrop-filter: blur(7px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -43,11 +41,18 @@ html, body {
   }
 }
 
+.main-content {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+}
+
 h1, h2 {
   text-align: center;
   color: $primary-color;
   font-weight: bold;
   margin-top: 10px;
+  margin-bottom: 10px;
   text-shadow: 2px 2px 4px $shadow-color;
 }
 
@@ -98,8 +103,8 @@ button {
 
   &.clear-storage-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: calc($navbar-height + 30px);
+    right: 16px;
     padding: 8px;
     border-radius: 5px;
     background-color: hsl(0, 0%, 100%, 0.05);
@@ -169,6 +174,7 @@ li {
 footer {
   text-align: center;
   margin-top: 20px;
+  padding: 2px;
   color: #cccccc;
   font-size: 14px;
   text-shadow: 1px 1px 2px $shadow-color;
@@ -278,4 +284,91 @@ footer {
       right: 0px;
     }
   }
+}
+
+.NavBar {
+  position: sticky;
+  top: 0;
+  min-height: $navbar-height;
+  z-index: 100;
+  box-shadow: 0px 10px 15px 2px #000;
+}
+nav {
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  background-color: rgba(0, 0, 0, 0.95);
+  padding: 10px 2%;
+  height: $navbar-height;
+
+  a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #fff;
+    transition: 0.3s;
+
+    &:hover {
+      color: #ccc;
+    }
+  }
+
+  .NavLinks {
+    flex-grow: 1;
+    background-color: transparent;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    li {
+      background-color: transparent;
+      list-style-type: none;
+      display: inline-block;
+      padding: 10px 20px;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+}
+.MobileNavigation {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .DesktopNavigation {
+    display: none;
+  }
+
+  .MobileNavigation {
+    display: flex;
+    align-items: center;
+  }
+
+  .NavLinks ul {
+    margin: 0px;
+    padding-top: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    position: absolute;
+    border-top: 3px solid $primary-color;
+    top: $navbar-height;
+    right: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    box-shadow: 0px 10px 15px 2px #000;
+  }
+}
+
+.HamburgerMenu {
+  position: absolute;
+  right: 2%;
+  cursor: pointer;
+  color: $primary-color;
 }
