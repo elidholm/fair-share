@@ -1,9 +1,13 @@
-// Variables
+// Colors
 $primary-color: #f0f0f0;
 $background-color: rgba(0, 0, 0, 0.75);
 $button-hover-scale: 1.05;
 $shadow-color: rgba(0, 0, 0, 0.6);
 $border-radius: 8px;
+$label-colour: #444;
+$disabled-colour: #555;
+$toggle-colour: #1db954;
+$focus-color: #3ddc97;
 
 html, body {
   height: 100%;
@@ -169,4 +173,109 @@ footer {
   font-size: 14px;
   text-shadow: 1px 1px 2px $shadow-color;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toggle-switch {
+  position: relative;
+  width: 80px;
+  display: inline-block;
+  vertical-align: middle;
+  user-select: none;
+  text-align: left;
+
+  &-checkbox {
+    display: none;
+  }
+
+  &-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid $label-colour;
+    border-radius: 20px;
+    margin: 0;
+    background-color: $label-colour;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      outline: none;
+      > span {
+        box-shadow: 0 0 4px 6px $focus-color
+      }
+    }
+    > span:focus {
+      outline: none;
+    }
+  }
+
+  &-inner {
+    display: block;
+    width: 200%;
+    margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+
+    &:before,
+    &:after {
+      display: block;
+      float: left;
+      width: 50%;
+      height: 34px;
+      padding: 0;
+      line-height: 34px;
+      font-size: 14px;
+      color: $primary-color;
+      font-weight: bold;
+      box-sizing: border-box;
+      border-radius: 20px;
+    }
+
+    &:before {
+      content: attr(data-yes);
+      text-transform: uppercase;
+      padding-left: 10px;
+      background-color: $toggle-colour;
+      color: $primary-color;
+    }
+  }
+
+  &-disbled {
+    background-color: $disabled-colour;
+    cursor: not-allowed;
+    &:before {
+      background-color: $disabled-colour;
+    }
+  }
+
+  &-inner:after {
+    content: attr(data-no);
+    text-transform: uppercase;
+    padding-right: 15px;
+    background-color: $label-colour;
+    color: $primary-color;
+    text-align: right;
+  }
+
+  &-switch {
+    display: block;
+    width: 24px;
+    margin: 5px;
+    background: $primary-color;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 40px;
+    border: 1px solid $label-colour;
+    border-radius: 20px;
+    transition: all 0.3s ease-in 0s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  }
+
+  &-checkbox:checked + &-label {
+    .toggle-switch-inner {
+      margin-left: 0;
+    }
+    .toggle-switch-switch {
+      right: 0px;
+    }
+  }
 }

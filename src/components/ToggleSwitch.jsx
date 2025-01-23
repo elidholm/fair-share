@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./ToggleSwitch.scss";
 
 function ToggleSwitch({ id, name, checked, onChange, optionLabels = ["50/50", "%"], disabled }) {
   function handleKeyPress(e) {
