@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X, Plus, RefreshCcw } from "react-feather";
-import ToggleSwitch from "./ToggleSwitch.jsx";
+import ToggleSwitch from "../components/ToggleSwitch.jsx";
 
 function CostCalculator() {
   const defaultIncomes = [
@@ -99,8 +99,8 @@ function CostCalculator() {
 
   const expenseShares = incomes.map(income => ({
     name: income.name,
-    share: splitMode ? (0.5).toFixed(2) : ((income.amount / totalIncome) || 0).toFixed(2),
-    expense: splitMode ? (totalExpenses / 2).toFixed(2) : ((income.amount / totalIncome) * totalExpenses).toFixed(2)
+    share: splitMode ? (1 / incomes.length).toFixed(2) : ((income.amount / totalIncome) || 0).toFixed(2),
+    expense: splitMode ? (totalExpenses / incomes.length).toFixed(2) : ((income.amount / totalIncome) * totalExpenses).toFixed(2)
   }));
 
   // Clear localStorage handler
