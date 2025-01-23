@@ -20,6 +20,7 @@ function CostCalculator() {
     { name: "Electricity", amount: "" },
     { name: "Electric Grid", amount: "" },
     { name: "Internet", amount: 489 },
+    { name: "Viaplay", amount: 299 },
   ];
   const [expenses, setExpenses] = useState(() => {
     const storedExpenses = localStorage.getItem("expenses");
