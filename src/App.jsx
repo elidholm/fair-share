@@ -1,6 +1,7 @@
 import React from "react";
 import CostCalculator from "./pages/CostCalculator.jsx";
 import Budget from "./pages/Budget.jsx"
+import Home from "./pages/Home.jsx";
 import NavBar from "./components/nav_bar/NavBar.jsx"
 import Footer from "./components/Footer.jsx"
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -23,11 +24,11 @@ const router = createBrowserRouter([{
   children: [
     {
       path: '/',
-      element: <CostCalculator />,
+      element: <Home />,
     },
     {
       path: '/home',
-      element: <CostCalculator />,
+      element: <Home />,
     },
     {
       path: '/split-costs',
