@@ -2,13 +2,16 @@ import React from "react";
 import NavLinks from "./NavLinks.jsx";
 import { Link } from "react-router-dom";
 
-const DesktopNavigation = () => {
+function DesktopNavigation() {
   return(
     <nav className="DesktopNavigation">
-      <Link to={"/"}>
+      <Link to={"/"} className="desktop-nav-logo">
         <h1>FairShare</h1>
       </Link>
       <NavLinks />
+      <button className="desktop-login-button">
+        Login
+      </button>
     </nav>
   )
 }

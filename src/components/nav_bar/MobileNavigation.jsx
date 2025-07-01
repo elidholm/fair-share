@@ -1,38 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import NavLinks from "./NavLinks.jsx";
 import { Link } from "react-router-dom";
-import { Menu, X } from "react-feather";
 
 function MobileNavigation() {
-  const hamburger = (
-    <Menu
-      className="HamburgerMenu"
-      size="30px"
-      onClick={ () => setClick(!click) }
-    />
-  );
-
-  const close = (
-    <X
-      className="HamburgerMenu"
-      size="30px"
-      onClick={ () => setClick(!click) }
-    />
-  );
-
-  function closeMenu() {
-    setClick(false);
-  }
-
-  const [click, setClick] = useState(false);
-
   return (
     <nav className="MobileNavigation">
-      <Link to={"/"} onClick={ () => closeMenu() }>
-        <h1>FairShare</h1>
-      </Link>
-      { click ? close : hamburger }
-      { click && <NavLinks isClicked={true} closeMenu={closeMenu} /> }
+      <div className="mobile-nav-top-row">
+        <Link to={"/"} className="mobile-nav-logo">
+          <h1>FairShare</h1>
+        </Link>
+        <button className="mobile-login-button">
+          Login
+        </button>
+      </div>
+      <div className="mobile-nav-links-row">
+        <NavLinks />
+      </div>
     </nav>
   );
 }
