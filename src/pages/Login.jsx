@@ -9,7 +9,7 @@ function Login() {
         <form className="login-form">
           <div className="form-group">
             <label htmlFor="username">Username</label>
-            <input type="username" id="username" placeholder="Enter your username" required />
+            <input type="username" autoCapitalize="none" id="username" placeholder="Enter your username" required />
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
