@@ -1,6 +1,6 @@
 // Colors
 $primary-color: #f0f0f0;
-$background-color: rgba(0, 0, 0, 0.75);
+$background-color: rgb(32, 32, 32);
 $button-hover-scale: 1.05;
 $shadow-color: rgba(0, 0, 0, 0.6);
 $border-radius: 8px;
@@ -20,14 +20,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
   background-color: $background-color;
   -webkit-overflow-scrolling: touch;
-  -webkit-background-size: cover;
-  background: {
-    image: url(assets/background.jpg);
-    size: cover;
-    attachment: fixed;
-    position: center top;
-    repeat: no-repeat;
-  }
 }
 
 #app-container {
