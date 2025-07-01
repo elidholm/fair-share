@@ -9,9 +9,9 @@ function DesktopNavigation() {
         <h1>FairShare</h1>
       </Link>
       <NavLinks />
-      <button className="desktop-login-button">
+      <Link to="/login" className="desktop-login-button">
         Login
-      </button>
+      </Link>
     </nav>
   )
 }

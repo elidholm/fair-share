@@ -9,9 +9,9 @@ function MobileNavigation() {
         <Link to={"/"} className="mobile-nav-logo">
           <h1>FairShare</h1>
         </Link>
-        <button className="mobile-login-button">
+        <Link to="/login" className="mobile-login-button">
           Login
-        </button>
+        </Link>
       </div>
       <div className="mobile-nav-links-row">
         <NavLinks />
