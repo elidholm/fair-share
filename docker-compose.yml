@@ -1,7 +1,8 @@
 ---
 services:
-  reverse-proxy:
+  traefik:
     image: traefik:v3.1
+    container_name: traefik
     command:
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
@@ -18,18 +19,28 @@ services:
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
-  fairshare:
+    restart: unless-stopped
+    networks:
+      - web
+
+  frontend:
     build: ./frontend
+    container_name: frontend
+    environment:
+      - NODE_ENV=production
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.fairshare.rule=Host(`fairshare.fun`)"
       - "traefik.http.routers.fairshare.entrypoints=websecure"
       - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
-    ports:
-      - "3000:3000"
-    volumes:
-      - /app/node_modules  # Ensures node_modules is isolated inside the container
-      - ./frontend/src:/app/src
+    depends_on:
+      - traefik
+    networks:
+      - web
 
 volumes:
   letsencrypt:
+
+networks:
+  web:
+    driver: bridge

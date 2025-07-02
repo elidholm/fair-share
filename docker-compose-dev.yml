@@ -1,0 +1,16 @@
+---
+services:
+  frontend:
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend/src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./frontend/package.json
