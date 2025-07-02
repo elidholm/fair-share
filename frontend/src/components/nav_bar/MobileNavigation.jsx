@@ -12,6 +12,9 @@ function MobileNavigation() {
         <Link to="/login" className="mobile-login-button">
           Login
         </Link>
+        <Link to="/sign-up" className="mobile-login-button">
+          Sign Up
+        </Link>
       </div>
       <div className="mobile-nav-links-row">
         <NavLinks />

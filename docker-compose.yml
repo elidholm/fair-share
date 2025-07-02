@@ -26,7 +26,11 @@ services:
   backend:
     build: ./backend
     container_name: backend
+    volumes:
+      - /cm/storage/fairshare:/app/database/
     environment:
+      - DB_TYPE=sqlite
+      - DB_PATH=/app/database/fairshare.db
       - NODE_ENV=production
     networks:
       - web

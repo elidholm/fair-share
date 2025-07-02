@@ -20,6 +20,9 @@ services:
       - NODE_ENV=development
     ports:
       - "3001:3001"
+    volumes:
+      - ./local_db:/app/database/
+
     develop:
       watch:
         - action: sync

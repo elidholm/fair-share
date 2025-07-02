@@ -367,6 +367,29 @@ nav {
       transform: scale(1.05);
     }
   }
+
+  .desktop-logout-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: hsl(0, 100%, 50%);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+      background-color: hsl(0, 100%, 60%);
+      transform: scale(1.05);
+    }
+  }
+
+  .user-logout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $primary-color;
+  }
 }
 
 // Mobile Navigation Styles
