@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 
-app.use('/api/health', healthRouter);
+app.use('/health', healthRouter);
 
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);

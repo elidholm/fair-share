@@ -20,6 +20,9 @@ services:
       - NODE_ENV=development
     ports:
       - "3001:3001"
+    networks:
+      - internal
+      - web
     develop:
       watch:
         - action: sync

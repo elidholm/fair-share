@@ -29,7 +29,7 @@ services:
     environment:
       - NODE_ENV=production
     networks:
-      - web
+      - internal
 
   frontend:
     build: ./frontend
@@ -42,9 +42,11 @@ services:
       - "traefik.http.routers.fairshare.entrypoints=websecure"
       - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
     depends_on:
+      - backend
       - traefik
     networks:
       - web
+      - internal
 
 volumes:
   letsencrypt:
@@ -52,3 +54,5 @@ volumes:
 networks:
   web:
     driver: bridge
+  internal:
+    internal: true

@@ -7,7 +7,15 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
     host: true,
-    allowedHosts: ['fairshare.fun', 'localhost']
+    allowedHosts: ['fairshare.fun', 'localhost'],
+    proxy: {
+      '/api': {
+        target: 'http://backend:3001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false,
+      }
+    }
   },
   css: {
     preprocessorOptions: {

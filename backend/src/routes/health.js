@@ -2,10 +2,11 @@ import express from 'express';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (_, res) => {
   res.json({
-    status: 'Backend API is up and running',
-    timestamp: new Date().toISOString()
+    status: 'healty',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
