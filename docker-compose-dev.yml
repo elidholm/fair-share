@@ -14,3 +14,18 @@ services:
             - node_modules/
         - action: rebuild
           path: ./frontend/package.json
+
+  backend:
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3001:3001"
+    develop:
+      watch:
+        - action: sync
+          path: ./backend/src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./backend/package.json
