@@ -28,13 +28,6 @@ services:
     container_name: backend
     environment:
       - NODE_ENV=production
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`fairshare.fun`)"
-      - "traefik.http.routers.backend.entrypoints=websecure"
-      - "traefik.http.routers.backend.tls.certresolver=myresolver"
-    depends_on:
-      - traefik
     networks:
       - web
 
@@ -45,7 +38,7 @@ services:
       - NODE_ENV=production
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.fairshare.rule=Host(`api.fairshare.fun`)"
+      - "traefik.http.routers.fairshare.rule=Host(`fairshare.fun`)"
       - "traefik.http.routers.fairshare.entrypoints=websecure"
       - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
     depends_on:
