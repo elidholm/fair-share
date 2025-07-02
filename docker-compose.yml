@@ -29,7 +29,7 @@ services:
     environment:
       - NODE_ENV=production
     networks:
-      - internal
+      - web
 
   frontend:
     build: ./frontend
@@ -46,7 +46,6 @@ services:
       - traefik
     networks:
       - web
-      - internal
 
 volumes:
   letsencrypt:
@@ -54,5 +53,3 @@ volumes:
 networks:
   web:
     driver: bridge
-  internal:
-    internal: true
