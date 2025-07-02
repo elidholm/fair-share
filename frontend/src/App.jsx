@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CostCalculator from "./pages/CostCalculator.jsx";
 import Budget from "./pages/Budget.jsx"
 import Home from "./pages/Home.jsx";
@@ -24,34 +24,36 @@ const router = createBrowserRouter([{
   path: '/',
   element: <Layout />,
   children: [
-    {
-      path: '/',
-      element: <Home />,
-    },
-    {
-      path: '/home',
-      element: <Home />,
-    },
-    {
-      path: '/split-costs',
-      element: <CostCalculator />,
-    },
-    {
-      path: '/budget',
-      element: <Budget />,
-    },
-    {
-      path: '/login',
-      element: <Login />,
-    },
-    {
-      path: '/sign-up',
-      element: <SignUp />,
-    }
+    { path: '/', element: <Home /> },
+    { path: '/home', element: <Home /> },
+    { path: '/split-costs', element: <CostCalculator /> },
+    { path: '/budget', element: <Budget /> },
+    { path: '/login', element: <Login /> },
+    { path: '/sign-up', element: <SignUp /> }
   ]
 }])
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  // Check auth status on app load
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me', {
+          credentials: 'include'
+        });
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      }
+    };
+    checkAuth();
+  }, []);
+
   return (
     <RouterProvider router={router} />
   )
