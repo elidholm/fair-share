@@ -13,16 +13,16 @@ function DesktopNavigation() {
       </Link>
       <NavLinks />
       {user ? (
-          <div className="user-logout">
-            <span>Welcome, {user.username}</span>
-            <button onClick={logout} className="desktop-logout-button">Logout</button>
-          </div>
-        ) : (
-          <div className="login-signup">
-            <Link to="/sign-up">Sign Up</Link>
-            <Link to="/login" className="desktop-login-button">Login</Link>
-          </div>
-        )}
+        <div className="user-logout">
+          <span>Welcome, {user.username}</span>
+          <button onClick={logout} className="logout-button">Logout</button>
+        </div>
+      ) : (
+        <div className="login-signup">
+          <Link to="/sign-up">Sign Up</Link>
+          <Link to="/login" className="desktop-login-button">Login</Link>
+        </div>
+      )}
     </nav>
   );
 }
