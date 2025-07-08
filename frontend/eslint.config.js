@@ -1,4 +1,4 @@
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config"
 import globals from "globals";
 import js from "@eslint/js";
 import pluginReact from "eslint-plugin-react";
@@ -13,4 +13,5 @@ export default defineConfig([
   pluginReact.configs.flat.recommended,
   { files: ["**/*.md"], plugins: { markdown }, language: "markdown/commonmark", extends: ["markdown/recommended"] },
   { files: ["**/*.css"], plugins: { css }, language: "css/css", extends: ["css/recommended"] },
+  globalIgnores(["node_modules", "dist", "build", "coverage", ".next", ".nuxt", ".cache", ".vercel", ".output"]),
 ]);
