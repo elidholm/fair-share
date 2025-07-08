@@ -1,7 +1,7 @@
 .PHONY: dev prod
 
 dev:
-	@./dev-setup.sh
+	@./scripts/dev-setup.sh
 
 prod:
-	@./prod-setup.sh
+	@./scripts/prod-setup.sh

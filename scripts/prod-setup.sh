@@ -4,11 +4,13 @@
 
 set -euo pipefail
 
-docker compose down
+DIR=$(dirname "$0")
+
+docker compose -f "$DIR/../docker-compose.yml" down
 
 docker compose pull
 
-docker compose up --build --remove-orphans -d
+docker compose -f "$DIR/../docker-compose.yml" up --build --remove-orphans -d
 
 # Print helpful information
 echo ""
