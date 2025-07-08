@@ -24,7 +24,9 @@ function ToggleSwitch({ id, name, checked, onChange, optionLabels = ["50/50", "%
           className="toggle-switch-label"
           htmlFor={id}
           tabIndex={disabled ? -1 : 1}
-          onKeyDown={e => handleKeyPress(e)}>
+          onKeyDown={e => handleKeyPress(e)}
+          data-testid="toggle-label"
+        >
             <span
               className={
                 disabled
