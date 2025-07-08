@@ -14,7 +14,7 @@ function DesktopNavigation() {
       <NavLinks />
       {user ? (
         <div className="user-logout">
-          <span>Welcome, {user.username}</span>
+          <span>{user.username}</span>
           <button onClick={logout} className="logout-button">Logout</button>
         </div>
       ) : (
