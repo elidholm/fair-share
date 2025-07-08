@@ -34,7 +34,7 @@ const router = createBrowserRouter([{
 }])
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [, setUser] = useState(null);
 
   // Check auth status on app load
   useEffect(() => {
