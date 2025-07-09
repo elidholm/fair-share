@@ -1,13 +1,7 @@
 ---
 name: CI Pipeline
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: [push]
 
 jobs:
   frontend-ci:
@@ -35,3 +29,43 @@ jobs:
 
       - name: Run unit tests (Vitest)
         run: npm test
+
+      - name: Build production bundle
+        run: npm run build
+
+  shellcheck:
+    name: Shell Script Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+
+  hadolint:
+    name: Dockerfile Linting
+    runs-on: ubuntu-latest
+    container: hadolint/hadolint:latest-alpine
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Hadolint
+        run: hadolint ./**/*Dockerfile*
+
+  yamllint:
+    name: YAML Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run yamllint
+        uses: karancode/yamllint-github-action@master
+        with:
+          yamllint_strict: false
+          yamllint_comment: true
+          yamllint_config_filepath: ./.yamllint.yml
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
