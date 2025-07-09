@@ -45,7 +45,7 @@ router.get('/me', async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     res.json(user);
-  } catch (error) {
+  } catch (error) { // eslint-disable-line no-unused-vars
     res.status(401).json({ error: 'Invalid token' });
   }
 });
@@ -84,7 +84,7 @@ router.post('/login', async (req, res) => {
       email: user.email
     });
 
-  } catch (error) {
+  } catch (error) { // eslint-disable-line no-unused-vars
     res.status(500).json({ error: 'Login failed' });
   }
 });
