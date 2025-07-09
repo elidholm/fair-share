@@ -127,13 +127,14 @@ function CostCalculator() {
           <li key={index}>
             <div className="text">{income.name}</div>
             <input
+              data-testid={`income-${index}`}
               type="number"
               pattern="[0-9]*"
               inputMode="numeric"
               value={income.amount === "" ? "" : income.amount}
               onChange={(event) => handleIncomeChange(event, index)}
             />kr
-            <button className="remove-button" onClick={() => deleteIncome(index)}><X /></button>
+            <button title={income.name} className="remove-button" onClick={() => deleteIncome(index)}><X /></button>
           </li>
         ))}
       </ul>
@@ -145,7 +146,7 @@ function CostCalculator() {
           onChange={handleNewIncomeChange}
           onKeyDown={(event) => event.key === "Enter" && addIncome()}
         />
-        <button className="add-button" onClick={addIncome}><Plus /></button>
+        <button title="Add Income" className="add-button" onClick={addIncome}><Plus /></button>
       </div>
       <h3>Total: {totalIncome} kr</h3>
 
@@ -157,13 +158,14 @@ function CostCalculator() {
           <li key={index}>
             <div className="text">{expense.name}</div>
             <input
+              data-testid={`expense-${index}`}
               type="number"
               pattern="[0-9]*"
               inputMode="numeric"
               value={expense.amount === "" ? "" : expense.amount}
               onChange={(event) => handleExpenseChange(event, index)}
             />kr
-            <button className="remove-button" onClick={() => deleteExpense(index)}><X /></button>
+            <button title={expense.name} className="remove-button" onClick={() => deleteExpense(index)}><X /></button>
           </li>
         ))}
       </ul>
@@ -175,7 +177,7 @@ function CostCalculator() {
           onChange={handleNewExpenseChange}
           onKeyDown={(event) => event.key === "Enter" && addExpense()}
         />
-        <button className="add-button" onClick={addExpense}><Plus /></button>
+        <button title="Add Expense" className="add-button" onClick={addExpense}><Plus /></button>
       </div>
       <h3>Total: {totalExpenses} kr</h3>
 
