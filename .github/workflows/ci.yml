@@ -29,3 +29,6 @@ jobs:
 
       - name: Run unit tests (Vitest)
         run: npm test
+
+      - name: Build production bundle
+        run: npm run build
