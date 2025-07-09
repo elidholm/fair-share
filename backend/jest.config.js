@@ -4,6 +4,7 @@ const config = {
   collectCoverage: true,
   coverageProvider: "v8",
   testEnvironment: "node",
+  transform: {},
   moduleFileExtensions: ["js"],
   testMatch: ["**/src/**/*.test.js"],
   collectCoverageFrom: ["**/src/**/*.js"],
