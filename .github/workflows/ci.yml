@@ -56,6 +56,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Run unit tests (Jest)
+        run: npm test
+
   shellcheck:
     name: Shell Script Linting
     runs-on: ubuntu-latest
