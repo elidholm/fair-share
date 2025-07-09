@@ -6,22 +6,26 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@eslint/css": "^0.9.0",
     "@eslint/js": "^9.30.1",
     "@eslint/markdown": "^6.6.0",
+    "@types/jest": "^30.0.0",
     "eslint": "^9.30.1",
     "globals": "^16.3.0",
-    "nodemon": "^3.1.10"
+    "jest": "^30.0.4",
+    "mockdate": "^3.0.5",
+    "nodemon": "^3.1.10",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   }
 }
