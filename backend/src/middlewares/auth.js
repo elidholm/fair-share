@@ -13,7 +13,7 @@ export const authenticate = (req, res, next) => {
     req.userId = decoded.userId;
     next();
 
-  } catch (error) {
+  } catch (error) { // eslint-disable-line no-unused-vars
     res.status(401).json({ error: 'Invalid token' });
   }
 };

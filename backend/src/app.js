@@ -2,7 +2,6 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.js';
 import healthRouter from './routes/health.js';
-import { authenticate } from './middlewares/auth.js';
 
 const app = express();
 app.use(express.json());
