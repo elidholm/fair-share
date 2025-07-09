@@ -42,3 +42,14 @@ jobs:
 
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
+
+  hadolint:
+    name: Dockerfile Linting
+    runs-on: ubuntu-latest
+    container: hadolint/hadolint:latest-alpine
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Hadolint
+        run: hadolint ./**/*Dockerfile*
