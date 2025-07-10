@@ -1,0 +1,26 @@
+---
+name: Label Dependabot PRs
+on:
+  pull_request_target:
+    types:
+      - opened
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  dependabot:
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'elidholm/fair-share'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v2
+
+      - name: Add a label for all production dependencies
+        if: ${{ steps.dependabot-metadata.outputs.dependency-type == 'direct:production' }}
+        run: gh pr edit "$PR_URL" --add-label "production"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
