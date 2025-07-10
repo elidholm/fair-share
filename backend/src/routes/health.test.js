@@ -31,7 +31,7 @@ describe('Health Check Endpoint', () => {
       .expect(200);
 
     expect(response.body).toEqual({
-      status: 'healthy',
+      status: 'ok',
       timestamp: expect.any(String),
       environment: 'test'
     });
