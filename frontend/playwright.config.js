@@ -38,9 +38,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'docker compose -f ../docker-compose-dev.yml up',
+    command: 'docker compose -f ../docker-compose-dev.yml up --build',
     url: process.env.E2E_BASE_URL,
     reuseExistingServer: !process.env.CI,
+    stdout: 'pipe',
   },
 });
 
