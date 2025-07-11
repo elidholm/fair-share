@@ -34,13 +34,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels)
-        id: meta
+      - name: Extract frontend metadata (tags, labels)
+        id: frontend-meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-frontend
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-backend
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-frontend
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -52,8 +50,19 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.frontend-meta.outputs.tags }}
+          labels: ${{ steps.frontend-meta.outputs.labels }}
+
+      - name: Extract backend metadata (tags, labels)
+        id: backend-meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-backend
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=sha
 
       - name: Build and push backend image
         uses: docker/build-push-action@v6
@@ -61,5 +70,5 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.backend-meta.outputs.tags }}
+          labels: ${{ steps.backend-meta.outputs.labels }}
