@@ -1,5 +1,19 @@
 ---
 services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    command:
+      - "--cleanup"
+      - "--label-enable"
+      - "--interval"
+      - "30"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      - web
+
   traefik:
     image: traefik:v3.1
     container_name: traefik
@@ -23,20 +37,8 @@ services:
     networks:
       - web
 
-  backend:
-    build: ./backend
-    container_name: backend
-    volumes:
-      - /cm/storage/fairshare:/app/database/
-    environment:
-      - DB_TYPE=sqlite
-      - DB_PATH=/app/database/fairshare.db
-      - NODE_ENV=production
-    networks:
-      - web
-
   frontend:
-    build: ./frontend
+    image: ghcr.io/elidholm/fairshare-frontend:master
     container_name: frontend
     environment:
       - NODE_ENV=production
@@ -45,9 +47,24 @@ services:
       - "traefik.http.routers.fairshare.rule=Host(`fairshare.fun`)"
       - "traefik.http.routers.fairshare.entrypoints=websecure"
       - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
+      - "com.centurylinklabs.watchtower.enable=true"
     depends_on:
       - backend
       - traefik
+    networks:
+      - web
+
+  backend:
+    image: ghcr.io/elidholm/fairshare-backend:master
+    container_name: backend
+    volumes:
+      - /cm/storage/fairshare:/app/database/
+    environment:
+      - DB_TYPE=sqlite
+      - DB_PATH=/app/database/fairshare.db
+      - NODE_ENV=production
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     networks:
       - web
 
