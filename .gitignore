@@ -26,3 +26,7 @@ dist-ssr
 # Local dev files
 *.db
 coverage
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

@@ -10,5 +10,6 @@ rm -rf frontend/coverage
 rm -rf frontend/.cache
 
 rm -rf backend/dist
+rm -rf backend/coverage
 rm -rf backend/.cache
 echo "Cleanup complete"

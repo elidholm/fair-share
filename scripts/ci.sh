@@ -15,6 +15,15 @@ npm test
 npm run build
 popd
 
+echo -e "\n****** Backend Checks ******"
+pushd backend
+npm ci
+
+npm run lint
+
+npm test
+popd
+
 echo -e "\n****** YAML Linting ******"
 yamllint . && echo "YAML linting passed."
 

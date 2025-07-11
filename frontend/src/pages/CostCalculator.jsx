@@ -148,7 +148,7 @@ function CostCalculator() {
         />
         <button title="Add Income" className="add-button" onClick={addIncome}><Plus /></button>
       </div>
-      <h3>Total: {totalIncome} kr</h3>
+      <h3 data-testid="total-income">Total: {totalIncome} kr</h3>
 
       <ToggleSwitch id="split-mode" checked={splitMode} onChange={onSplitModeChange} />
 
@@ -179,7 +179,7 @@ function CostCalculator() {
         />
         <button title="Add Expense" className="add-button" onClick={addExpense}><Plus /></button>
       </div>
-      <h3>Total: {totalExpenses} kr</h3>
+      <h3 data-testid="total-expenses">Total: {totalExpenses} kr</h3>
 
       <button className="split-button" onClick={() => setShowSplit(true)}>Split Expenses</button>
 
@@ -187,7 +187,7 @@ function CostCalculator() {
         <div>
           <ul>
             {expenseShares.map((share, index) => (
-              <li key={index}>
+              <li key={index} data-testid={`share-${index}`}>
                 {share.name}&#39;s Share: {share.expense} kr ({(share.share * 100).toFixed(2)}%)
               </li>
             ))}

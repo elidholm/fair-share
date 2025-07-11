@@ -17,6 +17,11 @@ pushd frontend
 npm run lint
 popd
 
+echo -e "\n****** Backend Linting ******"
+pushd backend
+npm run lint
+popd
+
 echo -e "\n****** Dockerfile Linting ******"
 for file in ./**/*Dockerfile*; do
   docker run --rm -i ghcr.io/hadolint/hadolint < "$file"
