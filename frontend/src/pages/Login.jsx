@@ -68,7 +68,7 @@ function Login() {
           </button>
         </form>
         <div className="login-footer">
-          <p>Don&apos;t have an account? <Link to="/sign-up">Sign up</Link></p>
+          <p>Don&apos;t have an account? <Link to="/sign-up" data-testid="signup-link-text">Sign up</Link></p>
         </div>
       </div>
     </div>
