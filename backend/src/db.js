@@ -13,8 +13,8 @@ await db.exec(`
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    incomes TEXT DEFAULT '{}',  -- JSON string
-    expenses TEXT DEFAULT '{}'   -- JSON string
+    incomes TEXT DEFAULT '[]',  -- JSON string
+    expenses TEXT DEFAULT '[]'   -- JSON string
   );
 `);
 
