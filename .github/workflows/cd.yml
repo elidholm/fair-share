@@ -12,7 +12,7 @@ on:
       - completed
 
 env:
-  REMOTE_DIR: /home/${{ secrets.DEPLOY_USER }}/fair-share-testrelease
+  REMOTE_DIR: /home/${{ secrets.DEPLOY_USER }}/fair-share
 
 jobs:
   deploy:
@@ -22,12 +22,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: rsync deployments
+      - name: Sync Docker Compose file
         uses: burnett01/rsync-deployments@7.0.2
         with:
-          switches: -avzR
+          switches: -avz
           path: docker-compose.yml
-          remote_path: ${{ env.REMOTE_DIR }}
+          remote_path: ${{ env.REMOTE_DIR }}/docker-compose.yml
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+
+      - name: Sync prod setup script
+        uses: burnett01/rsync-deployments@7.0.2
+        with:
+          switches: -avz
+          path: scripts/prod-setup.sh
+          remote_path: ${{ env.REMOTE_DIR }}/scripts/prod-detup.sh
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
