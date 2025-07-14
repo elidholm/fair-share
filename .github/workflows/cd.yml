@@ -52,9 +52,12 @@ jobs:
 
       - name: Execute setup script
         if: steps.changed-files.outputs.any_changed == 'true'
-        run: |
-          ssh -o StrictHostKeyChecking=yes ${{ env.SSH_USER }}@${{ env.SSH_HOST }} <<EOF
-          cd ${{ env.REMOTE_DIR }}
-          chmod +x scripts/prod-setup.sh
-          echo "./script/prod-setup.sh"
-          EOF
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          script: |
+            cd ${{ env.REMOTE_DIR }}
+            chmod +x scripts/prod-setup.sh
+            echo "./script/prod-setup.sh"
