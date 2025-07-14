@@ -1,0 +1,57 @@
+---
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows:
+      - "Build and Push Docker Images"
+    branches:
+      - master
+    types:
+      - completed
+
+env:
+  SSH_HOST: ${{ secrets.SSH_HOST }}
+  SSH_USER: ${{ secrets.SSH_USER }}
+  REMOTE_DIR: /home/${{ secrets.SSH_USER }}/fair-share-testrelease
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - name: Set up rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
+      - name: Sync files using rsync
+        run: |
+          rsync -avzR -e "ssh -o StrictHostKeyChecking=yes" \
+            docker-compose.yml \
+            scripts/prod-setup.sh \
+            ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.REMOTE_DIR }}/
+
+      - name: Check if docker compose or setup script changed
+        id: changed-files
+        uses: tj-actions/changed-files@v46
+        with:
+          files: |
+            docker-compose.yml
+            scripts/prod-setup.sh
+
+      - name: Execute setup script
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          ssh -o StrictHostKeyChecking=yes ${{ env.SSH_USER }}@${{ env.SSH_HOST }} <<EOF
+          cd ${{ env.REMOTE_DIR }}
+          chmod +x scripts/prod-setup.sh
+          echo "./script/prod-setup.sh"
+          EOF
