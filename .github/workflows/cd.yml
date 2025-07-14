@@ -2,6 +2,7 @@
 name: CD Pipeline
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows:
       - "Build and Push Docker Images"
@@ -29,7 +30,7 @@ jobs:
           remote_path: ${{ env.REMOTE_DIR }}
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
-          remote_key: ${{ secrets.DEPLOY_KEY }}
+          remote_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
 
       - name: Check if docker compose or setup script changed
         id: changed-files
