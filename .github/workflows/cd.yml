@@ -11,8 +11,6 @@ on:
       - completed
 
 env:
-  SSH_HOST: ${{ secrets.SSH_HOST }}
-  SSH_USER: ${{ secrets.SSH_USER }}
   REMOTE_DIR: /home/${{ secrets.SSH_USER }}/fair-share-testrelease
 
 jobs:
@@ -23,21 +21,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@7.0.2
         with:
-          key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
-
-      - name: Set up rsync
-        run: sudo apt-get update && sudo apt-get install -y rsync
-
-      - name: Sync files using rsync
-        run: |
-          rsync -avzR -e "ssh -o StrictHostKeyChecking=yes" \
-            docker-compose.yml \
-            scripts/prod-setup.sh \
-            ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.REMOTE_DIR }}/
+          switches: -avzR
+          path: docker-compose.yml
+          remote_path: ${{ env.REMOTE_DIR }}
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_user: ${{ secrets.SSH_USER }}
+          remote_key: ${{ secrets.SSH_KEY }}
 
       - name: Check if docker compose or setup script changed
         id: changed-files
