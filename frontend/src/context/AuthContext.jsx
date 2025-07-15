@@ -26,6 +26,10 @@ export function AuthProvider({ children }) {
         method: 'POST',
         credentials: 'include'
       });
+
+      localStorage.removeItem("incomes");
+      localStorage.removeItem("expenses");
+
       setUser(null);
     } catch (error) {
       console.error('Logout failed:', error);

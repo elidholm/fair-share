@@ -5,10 +5,7 @@ import { useAuth } from "../context/AuthContext"
 
 function CostCalculator() {
   const { user } = useAuth();
-  const defaultIncomes = [
-    { name: "Edvin", amount: "" },
-    { name: "Elinore", amount: "" },
-  ];
+  const defaultIncomes = [];
   const [incomes, setIncomes] = useState(() => {
     const storedIncomes = localStorage.getItem("incomes");
     return storedIncomes ? JSON.parse(storedIncomes) : defaultIncomes;
@@ -55,13 +52,15 @@ function CostCalculator() {
             }
           }
         } catch(error) {
-          console.error("Failed to load income data:", error)
+          console.error("Failed to load income data from db, using local storage:", error)
         }
       }
 
       const storedIncomes = localStorage.getItem("incomes");
       if (storedIncomes) {
         setIncomes(JSON.parse(storedIncomes));
+      } else {
+        setIncomes(defaultIncomes);
       }
 
       setIncomeIsLoading(false);
@@ -84,13 +83,15 @@ function CostCalculator() {
             }
           }
         } catch(error) {
-          console.error("Failed to load expenses data:", error)
+          console.error("Failed to load expenses data from db, using local storage:", error)
         }
       }
 
       const storedExpenses = localStorage.getItem("expenses");
       if (storedExpenses) {
         setExpenses(JSON.parse(storedExpenses));
+      } else {
+        setExpenses(defaultExpenses);
       }
 
       setExpensesIsLoading(false);
