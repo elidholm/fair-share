@@ -16,6 +16,7 @@ function CostCalculator() {
   const [newIncome, setNewIncome] = useState("");
 
   const [incomeIsLoading, setIncomeIsLoading] = useState(true);
+  const [expensesIsLoading, setExpensesIsLoading] = useState(true);
 
   const defaultExpenses = [
     { name: "Rent", amount: "" },
@@ -66,7 +67,37 @@ function CostCalculator() {
       setIncomeIsLoading(false);
     }
 
+    const loadExpensesData = async () => {
+      setExpensesIsLoading(true);
+
+      if (user) {
+        try {
+          const response = await fetch('/api/expenses', {
+            credentials: 'include'
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.expenses && data.expenses.length > 0) {
+              setExpenses(data.expenses);
+              setExpensesIsLoading(false);
+              return;
+            }
+          }
+        } catch(error) {
+          console.error("Failed to load expenses data:", error)
+        }
+      }
+
+      const storedExpenses = localStorage.getItem("expenses");
+      if (storedExpenses) {
+        setExpenses(JSON.parse(storedExpenses));
+      }
+
+      setExpensesIsLoading(false);
+    }
+
     loadIncomeData();
+    loadExpensesData();
   }, [user]);
 
   useEffect(() => {
@@ -95,7 +126,9 @@ function CostCalculator() {
   }, [incomes, user]);
 
   useEffect(() => {
-    const saveExpensesData = async () => {
+    if (expensesIsLoading) return;
+
+    const saveData = async () => {
       if (user) {
         try {
           await fetch('/api/expenses', {
@@ -110,14 +143,10 @@ function CostCalculator() {
           console.error('Failed to save expenses data:', error);
         }
       }
-      saveExpensesToLocalStorage();
-    };
-
-    const saveExpensesToLocalStorage = () => {
       localStorage.setItem("expenses", JSON.stringify(expenses));
     };
 
-    saveExpensesData();
+    saveData();
   }, [expenses, user]);
 
   // Handlers for incomes and expenses
