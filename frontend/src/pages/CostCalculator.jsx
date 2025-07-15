@@ -62,8 +62,30 @@ function CostCalculator() {
   }, [incomes, user]);
 
   useEffect(() => {
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  }, [expenses]);
+    const saveExpensesData = async () => {
+      if (user) {
+        try {
+          await fetch('/api/expenses', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ expenses }),
+          });
+        } catch (error) {
+          console.error('Failed to save expenses data:', error);
+        }
+      }
+      saveExpensesToLocalStorage();
+    };
+
+    const saveExpensesToLocalStorage = () => {
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+    };
+
+    saveExpensesData();
+  }, [expenses, user]);
 
   // Handlers for incomes and expenses
   function handleIncomeChange(event, index) {
@@ -137,6 +159,15 @@ function CostCalculator() {
         });
       } catch (error) {
         console.error('Failed to clear income data:', error);
+      }
+
+      try {
+        await fetch('/api/expenses', {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.error('Failed to clear expenses data:', error);
       }
     }
 
