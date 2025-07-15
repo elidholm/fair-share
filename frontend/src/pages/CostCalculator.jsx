@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { X, Plus, RefreshCcw } from "react-feather";
-import ToggleSwitch from "../components/ToggleSwitch.jsx";
+import ToggleSwitch from "../components/ToggleSwitch";
+import { useAuth } from "../context/AuthContext"
 
 function CostCalculator() {
+  const { user } = useAuth();
   const defaultIncomes = [
     { name: "Edvin", amount: "" },
     { name: "Elinore", amount: "" },
@@ -32,10 +34,32 @@ function CostCalculator() {
   const [splitMode, setSplitMode] = useState(false);
   const [showSplit, setShowSplit] = useState(false);
 
-  // Save incomes and expenses to localStorage on change
   useEffect(() => {
-    localStorage.setItem("incomes", JSON.stringify(incomes));
-  }, [incomes]);
+    const saveIncomeData = async () => {
+      if (user) {
+        try {
+          await fetch('/api/incomes', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ incomes }),
+          });
+        } catch (error) {
+          console.error('Failed to save income data:', error);
+        }
+      }
+
+      saveIncomeToLocalStorage();
+    };
+
+    const saveIncomeToLocalStorage = () => {
+      localStorage.setItem("incomes", JSON.stringify(incomes));
+    };
+
+    saveIncomeData();
+  }, [incomes, user]);
 
   useEffect(() => {
     localStorage.setItem("expenses", JSON.stringify(expenses));
@@ -104,8 +128,18 @@ function CostCalculator() {
     expense: splitMode ? (totalExpenses / incomes.length).toFixed(2) : ((income.amount / totalIncome) * totalExpenses).toFixed(2)
   }));
 
-  // Clear localStorage handler
-  const handleClearStorage = () => {
+  const handleClearStorage = async () => {
+    if (user) {
+      try {
+        await fetch('/api/incomes', {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.error('Failed to clear income data:', error);
+      }
+    }
+
     localStorage.removeItem("incomes");
     localStorage.removeItem("expenses");
     setIncomes(defaultIncomes);
