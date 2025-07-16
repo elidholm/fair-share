@@ -250,7 +250,7 @@ function CostCalculator() {
       ><RefreshCcw /></button>
 
       <h2>Incomes</h2>
-      <ul>
+      <ul data-testid="income-list">
         {incomes.map((income, index) => (
           <li key={index}>
             <div className="text">{income.name}</div>
