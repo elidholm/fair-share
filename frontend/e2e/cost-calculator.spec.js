@@ -11,8 +11,7 @@ test.describe('Cost Calculator', () => {
     await expect(page.getByTestId('income-list')).not.toBeVisible();
 
     await expect(page.locator('h2:has-text("Expenses")')).toBeVisible();
-    await expect(page.getByTestId('expense-1')).toHaveValue('1196');
-    await expect(page.getByTestId('expense-5')).toHaveValue('579');
+    await expect(page.getByTestId('expense-list')).not.toBeVisible();
   });
 
   test('should add and remove income entries', async ({ page }) => {
@@ -33,42 +32,57 @@ test.describe('Cost Calculator', () => {
     await page.fill('input[placeholder="Enter new expense..."]', 'Netflix');
     await page.click('.add-expense .add-button');
 
-    await expect(page.getByTestId('expense-8')).toBeVisible();
+    await expect(page.getByText('Netflix')).toBeVisible();
 
     await page.click('li:has-text("Netflix") .remove-button');
-    await expect(page.getByTestId('expense-8')).not.toBeVisible();
+    await expect(page.getByText('Netflix')).not.toBeVisible();
   });
 
   test('should calculate totals correctly', async ({ page }) => {
-    await page.fill('input[placeholder="Enter new income..."]', 'Salary');
+    // Add and set up incomes
+    await page.fill('input[placeholder="Enter new income..."]', 'PersonA');
     await page.click('.add-income .add-button');
-    await page.fill('input[placeholder="Enter new income..."]', 'Bonus');
-    await page.click('.add-income .add-button');
-
-    // Set income amounts
     await page.getByTestId('income-0').fill('30000');
+
+    await page.fill('input[placeholder="Enter new income..."]', 'PersonB');
+    await page.click('.add-income .add-button');
     await page.getByTestId('income-1').fill('25000');
 
     await expect(page.getByTestId('total-income')).toHaveText('Total: 55000 kr');
 
+    // Add and set up expenses
+    await page.fill('input[placeholder="Enter new expense..."]', 'Rent');
+    await page.click('.add-expense .add-button');
     await page.getByTestId('expense-0').fill('12000');
-    await page.getByTestId('expense-3').fill('500');
 
-    const expectedTotal = 12000 + 1196 + 139 + 500 + 579 + 299 + 312;
-    await expect(page.getByTestId('total-expenses')).toContainText(`Total: ${expectedTotal} kr`);
+    await page.fill('input[placeholder="Enter new expense..."]', 'Groceries');
+    await page.click('.add-expense .add-button');
+    await page.getByTestId('expense-1').fill('500');
+
+    await expect(page.getByTestId('total-expenses')).toContainText('Total: 12500 kr');
   });
 
   test('should split expenses proportionally when split mode is off', async ({ page }) => {
+    const incomeA = 30000;
+    const incomeB = 25000;
+
     // Add and set up incomes
     await page.fill('input[placeholder="Enter new income..."]', 'PersonA');
     await page.click('.add-income .add-button');
+    await page.getByTestId('income-0').fill(`${incomeA}`);
+
     await page.fill('input[placeholder="Enter new income..."]', 'PersonB');
     await page.click('.add-income .add-button');
-    await page.getByTestId('income-0').fill('30000');
-    await page.getByTestId('income-1').fill('25000');
+    await page.getByTestId('income-1').fill(`${incomeB}`);
 
-    // Set up expenses
+    // Add and set up expenses
+    await page.fill('input[placeholder="Enter new expense..."]', 'Rent');
+    await page.click('.add-expense .add-button');
     await page.getByTestId('expense-0').fill('12000');
+
+    await page.fill('input[placeholder="Enter new expense..."]', 'Groceries');
+    await page.click('.add-expense .add-button');
+    await page.getByTestId('expense-1').fill('500');
 
     // Ensure split mode is off
     const splitMode = await page.locator('#split-mode').isChecked();
@@ -80,15 +94,15 @@ test.describe('Cost Calculator', () => {
     await page.click('.split-button');
 
     // Verify proportional split
-    const totalIncome = 30000 + 25000;
-    const totalExpenses = 12000 + 1196 + 139 + 579 + 299 + 312;
+    const totalIncome = incomeA + incomeB;
+    const totalExpenses = 12000 + 500;
 
-    const expenseA = (30000 / totalIncome * totalExpenses).toFixed(2);
-    const shareA = (30000 / totalIncome).toFixed(2);
+    const expenseA = (incomeA / totalIncome * totalExpenses).toFixed(2);
+    const shareA = (incomeA / totalIncome).toFixed(2);
     const percentA = (shareA * 100).toFixed(2);
 
-    const expenseB = (25000 / totalIncome * totalExpenses).toFixed(2);
-    const shareB = (25000 / totalIncome).toFixed(2);
+    const expenseB = (incomeB / totalIncome * totalExpenses).toFixed(2);
+    const shareB = (incomeB / totalIncome).toFixed(2);
     const percentB = (shareB * 100).toFixed(2);
 
     await expect(page.getByTestId('share-0')).toContainText(`${expenseA} kr (${percentA}%)`);
@@ -96,16 +110,26 @@ test.describe('Cost Calculator', () => {
   });
 
   test('should split expenses equally when split mode is on', async ({ page }) => {
+    const incomeA = 30000;
+    const incomeB = 25000;
+
     // Add and set up incomes
     await page.fill('input[placeholder="Enter new income..."]', 'PersonA');
     await page.click('.add-income .add-button');
+    await page.getByTestId('income-0').fill(`${incomeA}`);
+
     await page.fill('input[placeholder="Enter new income..."]', 'PersonB');
     await page.click('.add-income .add-button');
-    await page.getByTestId('income-0').fill('30000');
-    await page.getByTestId('income-1').fill('25000');
+    await page.getByTestId('income-1').fill(`${incomeB}`);
 
-    // Set up expenses
+    // Add and set up expenses
+    await page.fill('input[placeholder="Enter new expense..."]', 'Rent');
+    await page.click('.add-expense .add-button');
     await page.getByTestId('expense-0').fill('12000');
+
+    await page.fill('input[placeholder="Enter new expense..."]', 'Groceries');
+    await page.click('.add-expense .add-button');
+    await page.getByTestId('expense-1').fill('500');
 
     // Enable split mode
     await page.getByTestId('toggle-label').click();
@@ -118,7 +142,7 @@ test.describe('Cost Calculator', () => {
     expect(shares).toHaveLength(2);
 
     // Each should pay half of total expenses
-    const totalExpenses = 12000 + 1196 + 139 + 579 + 299 + 312;
+    const totalExpenses = 12000 + 500;
     const expectedShare = (totalExpenses / 2).toFixed(2);
 
     for (const share of shares) {
@@ -132,7 +156,9 @@ test.describe('Cost Calculator', () => {
     await page.click('.add-income .add-button');
     await page.getByTestId('income-0').fill('30000');
 
-    // Set up expenses
+    // Add and set up expenses
+    await page.fill('input[placeholder="Enter new expense..."]', 'Rent');
+    await page.click('.add-expense .add-button');
     await page.getByTestId('expense-0').fill('12000');
 
     // Reload the page
@@ -149,7 +175,9 @@ test.describe('Cost Calculator', () => {
     await page.click('.add-income .add-button');
     await page.getByTestId('income-0').fill('30000');
 
-    // Set up expenses
+    // Add and set up expenses
+    await page.fill('input[placeholder="Enter new expense..."]', 'Rent');
+    await page.click('.add-expense .add-button');
     await page.getByTestId('expense-0').fill('12000');
 
     // Click clear button
@@ -157,6 +185,6 @@ test.describe('Cost Calculator', () => {
 
     // Verify data was cleared
     await expect(page.getByTestId('income-list')).not.toBeVisible();
-    await expect(page.getByTestId('expense-0')).toHaveValue('');
+    await expect(page.getByTestId('expense-list')).not.toBeVisible();
   });
 });

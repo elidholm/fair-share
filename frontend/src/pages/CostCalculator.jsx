@@ -15,16 +15,7 @@ function CostCalculator() {
   const [incomeIsLoading, setIncomeIsLoading] = useState(true);
   const [expensesIsLoading, setExpensesIsLoading] = useState(true);
 
-  const defaultExpenses = [
-    { name: "Rent", amount: "" },
-    { name: "Parking", amount: 1196 },
-    { name: "Home Insurance", amount: 139 },
-    { name: "Electricity", amount: "" },
-    { name: "Electric Grid", amount: "" },
-    { name: "Internet", amount: 579 },
-    { name: "Viaplay", amount: 299 },
-    { name: "Dog Insurance", amount: 312 },
-  ];
+  const defaultExpenses = [];
   const [expenses, setExpenses] = useState(() => {
     const storedExpenses = localStorage.getItem("expenses");
     return storedExpenses ? JSON.parse(storedExpenses) : defaultExpenses;
@@ -281,7 +272,7 @@ function CostCalculator() {
       <ToggleSwitch id="split-mode" checked={splitMode} onChange={onSplitModeChange} />
 
       <h2>Expenses</h2>
-      <ul>
+      <ul data-testid="expense-list">
         {expenses.map((expense, index) => (
           <li key={index}>
             <div className="text">{expense.name}</div>
