@@ -91,15 +91,17 @@ describe('CostCalculator Component', () => {
   });
 
   it('expense fields can be reset', () => {
+    localStorage.setItem("expenses", JSON.stringify([{ name: "Test", amount: "" }]));
     render(<CostCalculator />);
 
-    const input = screen.getByTestId('expense-1');
+    const input = screen.getByTestId('expense-0');
     fireEvent.change(input, { target: { value: '1000' } });
     fireEvent.change(input, { target: { value: '' } });
     expect(input.value).toBe('');
   });
 
   it('does not allow text input in expense fields', () => {
+    localStorage.setItem("expenses", JSON.stringify([{ name: "Test", amount: "" }]));
     render(<CostCalculator />);
     const input = screen.getByTestId('expense-0');
     fireEvent.change(input, { target: { value: 'abc' } });
@@ -119,9 +121,10 @@ describe('CostCalculator Component', () => {
   });
 
   it('removes expense when delete button clicked', () => {
+    localStorage.setItem("expenses", JSON.stringify([{ name: "Test", amount: "" }]));
     render(<CostCalculator />);
 
-    const deleteButton = screen.getByTitle('Rent');
+    const deleteButton = screen.getByTitle('Test');
     fireEvent.click(deleteButton);
 
     expect(screen.queryByText('Rent')).not.toBeInTheDocument();
