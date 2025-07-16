@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { X, Plus, RefreshCcw } from "react-feather";
-import ToggleSwitch from "../components/ToggleSwitch.jsx";
+import ToggleSwitch from "../components/ToggleSwitch";
+import { useAuth } from "../context/AuthContext"
 
 function CostCalculator() {
-  const defaultIncomes = [
-    { name: "Edvin", amount: "" },
-    { name: "Elinore", amount: "" },
-  ];
+  const { user } = useAuth();
+  const defaultIncomes = [];
   const [incomes, setIncomes] = useState(() => {
     const storedIncomes = localStorage.getItem("incomes");
     return storedIncomes ? JSON.parse(storedIncomes) : defaultIncomes;
   });
   const [newIncome, setNewIncome] = useState("");
+
+  const [incomeIsLoading, setIncomeIsLoading] = useState(true);
+  const [expensesIsLoading, setExpensesIsLoading] = useState(true);
 
   const defaultExpenses = [
     { name: "Rent", amount: "" },
@@ -32,14 +34,121 @@ function CostCalculator() {
   const [splitMode, setSplitMode] = useState(false);
   const [showSplit, setShowSplit] = useState(false);
 
-  // Save incomes and expenses to localStorage on change
   useEffect(() => {
-    localStorage.setItem("incomes", JSON.stringify(incomes));
-  }, [incomes]);
+    const loadIncomeData = async () => {
+      setIncomeIsLoading(true);
+
+      if (user) {
+        try {
+          const response = await fetch('/api/incomes', {
+            credentials: 'include'
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.incomes && data.incomes.length > 0) {
+              setIncomes(data.incomes);
+              setIncomeIsLoading(false);
+              return;
+            }
+          }
+        } catch(error) {
+          console.error("Failed to load income data from db, using local storage:", error)
+        }
+      }
+
+      const storedIncomes = localStorage.getItem("incomes");
+      if (storedIncomes) {
+        setIncomes(JSON.parse(storedIncomes));
+      } else {
+        setIncomes(defaultIncomes);
+      }
+
+      setIncomeIsLoading(false);
+    }
+
+    const loadExpensesData = async () => {
+      setExpensesIsLoading(true);
+
+      if (user) {
+        try {
+          const response = await fetch('/api/expenses', {
+            credentials: 'include'
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.expenses && data.expenses.length > 0) {
+              setExpenses(data.expenses);
+              setExpensesIsLoading(false);
+              return;
+            }
+          }
+        } catch(error) {
+          console.error("Failed to load expenses data from db, using local storage:", error)
+        }
+      }
+
+      const storedExpenses = localStorage.getItem("expenses");
+      if (storedExpenses) {
+        setExpenses(JSON.parse(storedExpenses));
+      } else {
+        setExpenses(defaultExpenses);
+      }
+
+      setExpensesIsLoading(false);
+    }
+
+    loadIncomeData();
+    loadExpensesData();
+  }, [user]);
 
   useEffect(() => {
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  }, [expenses]);
+    if (incomeIsLoading) return;
+
+    const saveData = async () => {
+      if (user) {
+        try {
+          await fetch('/api/incomes', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ incomes }),
+          });
+        } catch (error) {
+          console.error('Failed to save income data:', error);
+        }
+      }
+
+      localStorage.setItem("incomes", JSON.stringify(incomes));
+    };
+
+    saveData();
+  }, [incomes, user]);
+
+  useEffect(() => {
+    if (expensesIsLoading) return;
+
+    const saveData = async () => {
+      if (user) {
+        try {
+          await fetch('/api/expenses', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ expenses }),
+          });
+        } catch (error) {
+          console.error('Failed to save expenses data:', error);
+        }
+      }
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+    };
+
+    saveData();
+  }, [expenses, user]);
 
   // Handlers for incomes and expenses
   function handleIncomeChange(event, index) {
@@ -104,8 +213,27 @@ function CostCalculator() {
     expense: splitMode ? (totalExpenses / incomes.length).toFixed(2) : ((income.amount / totalIncome) * totalExpenses).toFixed(2)
   }));
 
-  // Clear localStorage handler
-  const handleClearStorage = () => {
+  const handleClearStorage = async () => {
+    if (user) {
+      try {
+        await fetch('/api/incomes', {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.error('Failed to clear income data:', error);
+      }
+
+      try {
+        await fetch('/api/expenses', {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.error('Failed to clear expenses data:', error);
+      }
+    }
+
     localStorage.removeItem("incomes");
     localStorage.removeItem("expenses");
     setIncomes(defaultIncomes);
@@ -122,7 +250,7 @@ function CostCalculator() {
       ><RefreshCcw /></button>
 
       <h2>Incomes</h2>
-      <ul>
+      <ul data-testid="income-list">
         {incomes.map((income, index) => (
           <li key={index}>
             <div className="text">{income.name}</div>

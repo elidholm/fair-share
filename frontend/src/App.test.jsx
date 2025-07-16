@@ -5,10 +5,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
+
+vi.mock('../context/AuthContext', () => ({
+  useAuth: () => ({
+    user: null
+  })
+}));
+
 // Mock child components and router dependencies
 vi.mock('./pages/Home', () => ({ default: () => <div>Home Page</div> }));
 vi.mock('./pages/Login', () => ({ default: () => <div>Login Page</div> }));
 vi.mock('./pages/SignUp', () => ({ default: () => <div>SignUp Page</div> }));
+vi.mock('./pages/CostCalculator', () => ({ default: () => <div>Split costs Page</div> }));
 vi.mock('./components/nav_bar/NavBar', () => ({ default: () => <div>NavBar</div> }));
 vi.mock('./components/Footer', () => ({ default: () => <div>Footer</div> }));
 
