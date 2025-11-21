@@ -38,7 +38,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.4.0",
     "jsdom": "^27.1.0",
-    "sass": "^1.93.3",
+    "sass": "^1.94.0",
     "sass-embedded": "^1.93.2",
     "vite": "^7.2.2",
     "vitest": "^3.2.4"
