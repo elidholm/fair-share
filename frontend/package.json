@@ -31,7 +31,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.2",
-    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/coverage-v8": "^4.0.16",
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
@@ -41,6 +41,6 @@
     "sass": "^1.94.0",
     "sass-embedded": "^1.93.2",
     "vite": "^7.3.0",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   }
 }
