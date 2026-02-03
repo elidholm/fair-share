@@ -16,7 +16,7 @@
   "dependencies": {
     "prop-types": "^15.8.1",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react-dom": "^19.2.4",
     "react-feather": "^2.0.10",
     "react-router-dom": "^7.13.0"
   },
