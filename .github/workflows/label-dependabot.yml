@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Fetch Dependabot metadata
         id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@v3
 
       - name: Add a label for all production dependencies
         if: ${{ steps.dependabot-metadata.outputs.dependency-type == 'direct:production' }}
