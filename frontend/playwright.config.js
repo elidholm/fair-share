@@ -11,7 +11,7 @@ export default defineConfig({
     ['list']
   ],
   use: {
-    baseURL: process.env.E2E_BASE_URL,
+    baseURL: process.env.E2E_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -39,7 +39,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'docker compose -f ../docker-compose-dev.yml up --build',
-    url: process.env.E2E_BASE_URL,
+    url: process.env.E2E_BASE_URL || 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     stdout: 'pipe',
   },

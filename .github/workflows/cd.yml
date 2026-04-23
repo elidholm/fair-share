@@ -18,6 +18,7 @@ jobs:
   deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -37,7 +38,7 @@ jobs:
         with:
           switches: -avz
           path: scripts/prod-setup.sh
-          remote_path: ${{ env.REMOTE_DIR }}/scripts/prod-detup.sh
+          remote_path: ${{ env.REMOTE_DIR }}/scripts/prod-setup.sh
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
@@ -60,4 +61,4 @@ jobs:
           script: |
             cd ${{ env.REMOTE_DIR }}
             chmod +x scripts/prod-setup.sh
-            echo "./script/prod-setup.sh"
+            ./scripts/prod-setup.sh
