@@ -1,4 +1,5 @@
 import { expect, it, jest, describe, beforeEach } from '@jest/globals';
+import jwt from 'jsonwebtoken';
 import { authenticate } from './auth.js';
 
 // Mock the entire auth utils module
@@ -50,5 +51,16 @@ describe('authenticate middleware', () => {
     expect(mockResponse.status).toHaveBeenCalledWith(401);
     expect(mockResponse.json).toHaveBeenCalledWith({ error: 'Invalid token' });
     expect(nextFunction).not.toHaveBeenCalled();
+  });
+
+  it('should call next() and set userId for a valid token', () => {
+    const validToken = jwt.sign({ userId: '42' }, process.env.JWT_SECRET || 'deez', { expiresIn: '1d' });
+    mockRequest.cookies.token = validToken;
+
+    authenticate(mockRequest, mockResponse, nextFunction);
+
+    expect(nextFunction).toHaveBeenCalled();
+    expect(mockRequest.userId).toBe('42');
+    expect(mockResponse.status).not.toHaveBeenCalled();
   });
 });
