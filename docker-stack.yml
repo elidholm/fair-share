@@ -3,6 +3,8 @@ services:
   traefik:
     image: traefik:v3.1
     command:
+      - "--log.level=INFO"
+      - "--accesslog=true"
       - "--providers.swarm=true"
       - "--providers.swarm.exposedbydefault=false"
       - "--entryPoints.websecure.address=:443"
@@ -24,18 +26,23 @@ services:
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
 
   web:
     image: ghcr.io/elidholm/fairshare-web:${GIT_COMMIT_HASH:-latest}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.fairshare.loadbalancer.server.port=3000"
-      - "traefik.http.routers.fairshare.rule=Host(`fairshare.fun`)"
-      - "traefik.http.routers.fairshare.entrypoints=websecure"
-      - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
     environment:
       - NODE_ENV=production
     deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.fairshare_web.rule=Host(`fairshare.fun`)"
+        - "traefik.http.routers.fairshare_web.entrypoints=websecure"
+        - "traefik.http.routers.fairshare_web.tls.certresolver=myresolver"
+        - "traefik.http.routers.fairshare_web.service=fairshare_web"
+        - "traefik.http.services.fairshare_web.loadbalancer.server.port=3000"
       update_config:
         order: start-first
     depends_on:

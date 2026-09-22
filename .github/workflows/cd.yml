@@ -110,9 +110,9 @@ jobs:
         with:
           name: fairshare
           file: docker-stack.yml
-          host: ${{ secrets.DEPOLY_HOST }}
-          user: ${{ secrets.DEPOLY_USER }}
-          ssh_key: ${{ secrets.DEPOLY_SSH_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          user: ${{ secrets.DEPLOY_USER }}
+          ssh_key: ${{ secrets.DEPLOY_SSH_KEY }}
           env_file: ./envfile
           registry_auth: true
           registry_host: ${{ env.REGISTRY }}
