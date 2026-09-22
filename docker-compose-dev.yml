@@ -1,8 +1,25 @@
 ---
 services:
-  backend:
-    build: ./backend
-    container_name: backend
+  web:
+    build: ./web
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api_v1
+    develop:
+      watch:
+        - action: sync
+          path: ./web/src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./web/package.json
+
+  api_v1:
+    build: ./api/v1
     environment:
       - DB_TYPE=sqlite
       - DB_PATH=/app/database/fairshare.db
@@ -10,32 +27,16 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./local_db:/app/database/
+      - db-data:/app/database/
     develop:
       watch:
         - action: sync
-          path: ./backend/src
+          path: ./api/v1/src
           target: /app/src
           ignore:
             - node_modules/
         - action: rebuild
-          path: ./backend/package.json
+          path: ./api/v1/package.json
 
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    environment:
-      - NODE_ENV=development
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-    develop:
-      watch:
-        - action: sync
-          path: ./frontend/src
-          target: /app/src
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: ./frontend/package.json
+volumes:
+  db-data:

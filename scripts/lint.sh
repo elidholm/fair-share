@@ -13,17 +13,16 @@ shellcheck ./*.sh && echo "Shell script linting passed."
 popd
 
 echo -e "\n****** Frontend Linting ******"
-pushd frontend
+pushd web
 npm run lint
 popd
 
 echo -e "\n****** Backend Linting ******"
-pushd backend
+pushd api/v1
 npm run lint
 popd
 
 echo -e "\n****** Dockerfile Linting ******"
 for file in ./**/*Dockerfile*; do
-  docker run --rm -i ghcr.io/hadolint/hadolint < "$file"
+  docker run --rm -i ghcr.io/hadolint/hadolint <"$file"
 done && echo "Dockerfile linting passed."
-

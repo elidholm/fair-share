@@ -3,13 +3,14 @@
 set -euo pipefail
 
 echo "Cleaning up files..."
+docker compose -f docker-compose-dev.yml down --volumes --remove-orphans
 sudo rm -rf local_db
 
-rm -rf frontend/dist
-rm -rf frontend/coverage
-rm -rf frontend/.cache
+rm -rf web/dist
+rm -rf web/coverage
+rm -rf web/.cache
 
-rm -rf backend/dist
-rm -rf backend/coverage
-rm -rf backend/.cache
+rm -rf api/v1/dist
+rm -rf api/v1/coverage
+rm -rf api/v1/.cache
 echo "Cleanup complete"

@@ -25,6 +25,9 @@ function SignUp() {
         credentials: "include",
       });
 
+      if (!response || typeof response.ok !== "boolean") {
+        throw new Error("Invalid registration response");
+      }
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || "Registration failed");

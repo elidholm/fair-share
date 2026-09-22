@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { X, Plus, RefreshCcw } from "react-feather";
 import ToggleSwitch from "../components/ToggleSwitch";
 import { useAuth } from "../context/AuthContext"
@@ -11,6 +11,7 @@ function CostCalculator() {
     return storedIncomes ? JSON.parse(storedIncomes) : defaultIncomes;
   });
   const [newIncome, setNewIncome] = useState("");
+  const skipIncomePersistence = useRef(false);
 
   const [incomeIsLoading, setIncomeIsLoading] = useState(true);
   const [expensesIsLoading, setExpensesIsLoading] = useState(true);
@@ -21,6 +22,7 @@ function CostCalculator() {
     return storedExpenses ? JSON.parse(storedExpenses) : defaultExpenses;
   });
   const [newExpense, setNewExpense] = useState("");
+  const skipExpensePersistence = useRef(false);
 
   const [splitMode, setSplitMode] = useState(false);
   const [showSplit, setShowSplit] = useState(false);
@@ -96,6 +98,11 @@ function CostCalculator() {
     if (incomeIsLoading) return;
 
     const saveData = async () => {
+      if (skipIncomePersistence.current) {
+        skipIncomePersistence.current = false;
+        return;
+      }
+
       if (user) {
         try {
           await fetch('/api/incomes', {
@@ -121,6 +128,11 @@ function CostCalculator() {
     if (expensesIsLoading) return;
 
     const saveData = async () => {
+      if (skipExpensePersistence.current) {
+        skipExpensePersistence.current = false;
+        return;
+      }
+
       if (user) {
         try {
           await fetch('/api/expenses', {
@@ -227,6 +239,8 @@ function CostCalculator() {
 
     localStorage.removeItem("incomes");
     localStorage.removeItem("expenses");
+    skipIncomePersistence.current = true;
+    skipExpensePersistence.current = true;
     setIncomes(defaultIncomes);
     setExpenses(defaultExpenses);
   };

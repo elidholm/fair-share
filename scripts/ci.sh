@@ -5,7 +5,7 @@ set -euo pipefail
 echo "Running CI checks..."
 
 echo -e "\n****** Frontend Checks ******"
-pushd frontend
+pushd web
 npm ci
 
 npm run lint
@@ -16,7 +16,7 @@ npm run build
 popd
 
 echo -e "\n****** Backend Checks ******"
-pushd backend
+pushd api/v1
 npm ci
 
 npm run lint
@@ -32,5 +32,5 @@ shellcheck ./**/*.sh && echo "Shell script linting passed."
 
 echo -e "\n****** Dockerfile Linting ******"
 for file in ./**/*Dockerfile*; do
-  docker run --rm -i ghcr.io/hadolint/hadolint < "$file"
+  docker run --rm -i ghcr.io/hadolint/hadolint <"$file"
 done && echo "Dockerfile linting passed."

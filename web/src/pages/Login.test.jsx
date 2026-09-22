@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Login from './Login';
 
@@ -66,7 +66,9 @@ describe('Login Component', () => {
     fireEvent.change(screen.getByLabelText('Password'), {
       target: { value: 'correctpassword' }
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+    });
 
     expect(mockFetch).toHaveBeenCalledWith('/api/auth/login', {
       method: 'POST',
