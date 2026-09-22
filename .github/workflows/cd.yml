@@ -112,7 +112,7 @@ jobs:
           file: docker-stack.yml
           host: ${{ secrets.DEPLOY_HOST }}
           user: ${{ secrets.DEPLOY_USER }}
-          ssh_key: ${{ secrets.DEPLOY_SSH_KEY }}
+          ssh_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           env_file: ./envfile
           registry_auth: true
           registry_host: ${{ env.REGISTRY }}
