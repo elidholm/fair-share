@@ -1,7 +1,9 @@
 ---
 services:
   web:
-    build: ./web
+    build:
+      context: ./web
+      target: dev
     environment:
       - NODE_ENV=development
     ports:
