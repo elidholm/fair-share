@@ -10,7 +10,7 @@ export default defineConfig({
     allowedHosts: ['fairshare.fun', 'localhost'],
     proxy: {
       '/api': {
-        target: 'http://backend:3001',
+        target: 'http://api_v1:3001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: false,

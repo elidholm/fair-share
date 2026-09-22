@@ -2,10 +2,10 @@
 
 set -euo pipefail
 
-pushd frontend
+pushd web
 npm test
 popd
 
-pushd backend
+pushd api/v1
 npm test
 popd

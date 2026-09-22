@@ -4,7 +4,7 @@ dev:
 	@./scripts/dev-setup.sh
 
 prod:
-	@./scripts/prod-setup.sh
+	@docker stack deploy -c docker-stack.yml fairshare
 
 lint:
 	@./scripts/lint.sh

@@ -1,25 +1,33 @@
 ---
 name: CI Pipeline
 
-on: [push]
+"on":
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
 
 jobs:
-  frontend-ci:
+  web-ci:
     name: Frontend Checks
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./frontend
+        working-directory: ./web
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: web/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -33,22 +41,24 @@ jobs:
       - name: Build production bundle
         run: npm run build
 
-  backend-ci:
-    name: Backend Checks
+  api-v1-ci:
+    name: API v1 Checks
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./api/v1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
+          cache-dependency-path: api/v1/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -65,6 +75,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
@@ -76,6 +88,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Run Hadolint
         run: hadolint ./**/*Dockerfile*
@@ -83,9 +97,14 @@ jobs:
   yamllint:
     name: YAML Linting
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Run yamllint
         uses: karancode/yamllint-github-action@master
@@ -102,6 +121,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Run actionlint
         uses: raven-actions/actionlint@v2

@@ -44,7 +44,7 @@ describe('App Component', () => {
   var global = global || window;
   beforeEach(() => {
     vi.clearAllMocks();
-    global.fetch = vi.fn();
+    global.fetch = vi.fn().mockResolvedValue({ ok: false });
   });
 
   it('renders without crashing', () => {

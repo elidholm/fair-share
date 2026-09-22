@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import SignUp from './SignUp';
 
@@ -63,7 +63,9 @@ describe('SignUp Component', () => {
     fireEvent.change(screen.getByLabelText('Password (Confirm)'), {
       target: { value: 'different' }
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    });
 
     expect(await screen.findByText("Passwords don't match")).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
@@ -123,7 +125,9 @@ describe('SignUp Component', () => {
     fireEvent.change(screen.getByLabelText('Password (Confirm)'), {
       target: { value: 'password123' }
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    });
 
     expect(mockFetch).toHaveBeenCalledWith('/api/auth/register', {
       method: 'POST',

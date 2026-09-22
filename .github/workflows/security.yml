@@ -1,5 +1,6 @@
 ---
 name: Security Scanning
+
 on:
   push:
     branches:

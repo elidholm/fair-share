@@ -11,6 +11,9 @@ export function AuthProvider({ children }) {
       const response = await fetch('/api/auth/me', {
         credentials: 'include'
       });
+      if (!response || typeof response.ok !== 'boolean') {
+        throw new Error('Invalid authentication response');
+      }
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
@@ -43,6 +46,9 @@ export function AuthProvider({ children }) {
       const response = await fetch('/api/auth/me', {
         credentials: 'include'
       });
+      if (!response || typeof response.ok !== 'boolean') {
+        throw new Error('Invalid authentication response');
+      }
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);

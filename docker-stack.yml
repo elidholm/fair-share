@@ -1,25 +1,10 @@
 ---
 services:
-  watchtower:
-    image: containrrr/watchtower
-    container_name: watchtower
-    command:
-      - "--cleanup"
-      - "--label-enable"
-      - "--interval"
-      - "30"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-    networks:
-      - web
-
   traefik:
     image: traefik:v3.1
-    container_name: traefik
     command:
-      - "--providers.docker"
-      - "--providers.docker.exposedbydefault=false"
+      - "--providers.swarm=true"
+      - "--providers.swarm.exposedbydefault=false"
       - "--entryPoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       - "--certificatesresolvers.myresolver.acme.email=elidholm@fairshare.fun"
@@ -28,49 +13,42 @@ services:
       - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
       - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
     ports:
-      - "80:80"
-      - "443:443"
+      - mode: host
+        protocol: tcp
+        target: 80
+        published: 80
+      - mode: host
+        protocol: tcp
+        target: 443
+        published: 443
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-    networks:
-      - web
 
-  frontend:
-    image: ghcr.io/elidholm/fairshare-frontend:master
-    container_name: frontend
-    environment:
-      - NODE_ENV=production
+  web:
+    image: ghcr.io/elidholm/fairshare-web:${GIT_COMMIT_HASH:-latest}
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.fairshare.loadbalancer.server.port=3000"
       - "traefik.http.routers.fairshare.rule=Host(`fairshare.fun`)"
       - "traefik.http.routers.fairshare.entrypoints=websecure"
       - "traefik.http.routers.fairshare.tls.certresolver=myresolver"
-      - "com.centurylinklabs.watchtower.enable=true"
+    environment:
+      - NODE_ENV=production
+    deploy:
+      update_config:
+        order: start-first
     depends_on:
-      - backend
-      - traefik
-    networks:
-      - web
+      - api_v1
 
-  backend:
-    image: ghcr.io/elidholm/fairshare-backend:master
-    container_name: backend
+  api_v1:
+    image: ghcr.io/elidholm/fairshare-api-v1:${GIT_COMMIT_HASH:-latest}
     volumes:
       - /cm/storage/fairshare:/app/database/
     environment:
       - DB_TYPE=sqlite
       - DB_PATH=/app/database/fairshare.db
       - NODE_ENV=production
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-    networks:
-      - web
 
 volumes:
   letsencrypt:
-
-networks:
-  web:
-    driver: bridge
