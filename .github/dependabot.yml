@@ -2,34 +2,34 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/frontend"
+    directory: "/web"
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: "chore(frontend)"
-      prefix-development: "chore(frontend-dev)"
+      prefix: "chore(web)"
+      prefix-development: "chore(web-dev)"
 
   - package-ecosystem: "npm"
-    directory: "/backend"
+    directory: "/api/v1"
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: "chore(backend)"
-      prefix-development: "chore(backend-dev)"
+      prefix: "chore(api-v1)"
+      prefix-development: "chore(api-v1-dev)"
 
   - package-ecosystem: "docker"
-    directory: "/frontend"
+    directory: "/web"
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: "chore(frontend-docker)"
+      prefix: "chore(web-docker)"
 
   - package-ecosystem: "docker"
-    directory: "/backend"
+    directory: "/api/v1"
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: "chore(backend-docker)"
+      prefix: "chore(api-v1-docker)"
 
   - package-ecosystem: "github-actions"
     directory: "/"
