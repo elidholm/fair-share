@@ -45,6 +45,7 @@ services:
         - "traefik.http.services.fairshare_web.loadbalancer.server.port=3000"
       update_config:
         order: start-first
+      replicas: 3
     depends_on:
       - api_v1
 
