@@ -28,5 +28,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.js',
+    // Node 24+ ships an experimental global `localStorage`/`sessionStorage` that
+    // shadows the one jsdom provides for the test environment, breaking
+    // `localStorage` access in tests. Disable it in the worker processes.
+    execArgv: ['--no-experimental-webstorage'],
   },
 });
