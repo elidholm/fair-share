@@ -1,7 +1,7 @@
 ---
 name: Security Scanning
 
-on:
+"on":
   push:
     branches:
       - master
