@@ -1,0 +1,121 @@
+.home {
+  width: min(100dvw - 2rem, 64rem);
+  max-width: 100%;
+  margin: 0 auto;
+  padding: var(--fs-space-8) 0;
+  display: grid;
+  gap: var(--fs-space-8);
+  color: var(--fs-color-text);
+}
+
+.home__hero {
+  text-align: center;
+  display: grid;
+  gap: var(--fs-space-3);
+}
+
+.home__hero h1 {
+  font-size: var(--fs-text-title1);
+  letter-spacing: var(--fs-tracking-title);
+  margin: 0;
+}
+
+.home__tagline {
+  color: var(--fs-color-text-secondary);
+  font-size: var(--fs-text-headline);
+  margin: 0;
+}
+
+.home__features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--fs-space-6);
+}
+
+.home__feature {
+  display: grid;
+  gap: var(--fs-space-3);
+  text-align: center;
+  justify-items: center;
+}
+
+.home__feature h2,
+.home__feature p {
+  margin: 0;
+}
+
+.home__feature p {
+  color: var(--fs-color-text-secondary);
+}
+
+.home__feature-icon {
+  color: var(--fs-color-accent);
+}
+
+.home__info {
+  text-align: center;
+  display: grid;
+  gap: var(--fs-space-6);
+}
+
+.home__info h2 {
+  margin: 0;
+}
+
+.home__steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--fs-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.home__step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--fs-space-3);
+}
+
+.home__step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--fs-hit-target);
+  min-height: var(--fs-hit-target);
+  border-radius: var(--fs-radius-pill);
+  background: var(--fs-material-thick);
+  color: var(--fs-color-accent);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.home__step p {
+  margin: 0;
+  color: var(--fs-color-text-secondary);
+}
+
+.home__cta {
+  text-align: center;
+  display: grid;
+  gap: var(--fs-space-4);
+}
+
+.home__cta h2 {
+  margin: 0;
+}
+
+.home__cta-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--fs-space-4);
+}
+
+@media (max-width: 40rem) {
+  .home__cta-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

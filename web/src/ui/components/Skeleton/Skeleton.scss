@@ -1,0 +1,51 @@
+.fs-skeleton-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fs-space-2);
+  width: 100%;
+}
+
+.fs-skeleton {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: var(--fs-color-fill-strong);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    animation: fs-shimmer 1.6s ease-in-out infinite;
+  }
+
+  &--text {
+    width: 100%;
+    height: 0.9em;
+    border-radius: var(--fs-radius-sm);
+  }
+
+  &--rect {
+    width: 100%;
+    height: 3rem;
+    border-radius: var(--fs-radius-md);
+  }
+
+  &--circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+  }
+}
+
+@keyframes fs-shimmer {
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-skeleton::after {
+    animation: none;
+    display: none;
+  }
+}

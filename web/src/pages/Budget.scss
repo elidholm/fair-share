@@ -1,0 +1,117 @@
+.budget {
+  width: min(100% - 2rem, 72rem);
+  margin: 0 auto;
+  padding: var(--fs-space-8) 0;
+  color: var(--fs-color-text);
+}
+
+.budget__header,
+.budget__section-heading,
+.budget__item,
+.budget__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fs-space-4);
+}
+
+.budget__header {
+  flex-wrap: wrap;
+  margin-bottom: var(--fs-space-6);
+}
+
+.budget__header h1,
+.budget__section-heading h2 {
+  margin: 0;
+}
+
+.budget__header p,
+.budget__item p {
+  color: var(--fs-color-text-secondary);
+}
+
+.budget__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--fs-space-4);
+  margin: var(--fs-space-6) 0;
+}
+
+.budget__summary > * {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fs-space-2);
+}
+
+.budget__summary strong {
+  font-size: var(--fs-text-title2);
+}
+
+.budget__over,
+.budget__item .budget__over {
+  color: var(--fs-color-danger);
+}
+
+.budget__section-heading {
+  margin: var(--fs-space-8) 0 var(--fs-space-4);
+}
+
+.budget__list {
+  display: grid;
+  gap: var(--fs-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.budget__item {
+  flex-wrap: wrap;
+}
+
+.budget__item h3 {
+  margin: 0;
+}
+
+.budget__item p {
+  margin: var(--fs-space-2) 0 0;
+}
+
+.budget__actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.budget__form {
+  display: grid;
+  gap: var(--fs-space-4);
+}
+
+.budget__select {
+  display: grid;
+  gap: var(--fs-space-2);
+  color: var(--fs-color-text);
+}
+
+.budget__select select {
+  min-height: var(--fs-hit-target);
+  border: 1px solid var(--fs-color-separator);
+  border-radius: var(--fs-radius-md);
+  padding: var(--fs-space-2);
+  background: var(--fs-material-thick);
+  color: var(--fs-color-text);
+}
+
+.budget__select select:focus-visible {
+  outline: none;
+  box-shadow: var(--fs-focus-ring);
+}
+
+@media (max-width: 40rem) {
+  .budget__summary {
+    grid-template-columns: 1fr;
+  }
+
+  .budget__section-heading {
+    flex-wrap: wrap;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import CostCalculator from "./pages/CostCalculator.jsx";
 import Budget from "./pages/Budget.jsx"
 import Home from "./pages/Home.jsx";
@@ -34,29 +34,6 @@ const router = createBrowserRouter([{
 }])
 
 function App() {
-  const [, setUser] = useState(null);
-
-  // Check auth status on app load
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/api/auth/me', {
-          credentials: 'include'
-        });
-        if (!response || typeof response.ok !== 'boolean') {
-          throw new Error('Invalid authentication response');
-        }
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-      }
-    };
-    checkAuth();
-  }, []);
-
   return (
     <RouterProvider router={router} />
   )

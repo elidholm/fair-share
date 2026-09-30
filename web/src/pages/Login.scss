@@ -1,0 +1,35 @@
+.login {
+  min-height: calc(100vh - 12rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fs-space-8) var(--fs-space-4);
+}
+
+.login__card {
+  width: min(100%, 26rem);
+  display: grid;
+  gap: var(--fs-space-6);
+}
+
+.login__card h1 {
+  margin: 0;
+  text-align: center;
+  font-size: var(--fs-text-title2);
+}
+
+.login__form {
+  display: grid;
+  gap: var(--fs-space-4);
+}
+
+.login__footer {
+  text-align: center;
+  color: var(--fs-color-text-secondary);
+  margin: 0;
+}
+
+.login__footer a {
+  color: var(--fs-color-accent);
+  font-weight: 600;
+}

@@ -2,26 +2,32 @@ import React from "react";
 import NavLinks from "./NavLinks.jsx";
 import { Link } from "react-router-dom";
 import { useAuth } from '../../context/AuthContext';
+import { Alert, Button, LinkButton, Spinner } from "../../ui";
 
 function DesktopNavigation() {
-  const { user, logout } = useAuth();
+  const { user, authLoading, authError, logout, logoutError, logoutPending } = useAuth();
 
   return (
-    <nav className="DesktopNavigation">
-      <Link to={"/"} className="desktop-nav-logo">
-        <h1>FairShare</h1>
+    <nav className="DesktopNavigation" aria-label="Main navigation">
+      <Link to="/" className="desktop-nav-logo">
+        <span>FairShare</span>
       </Link>
       <NavLinks />
-      {user ? (
+      {authLoading ? (
+        <Spinner label="Checking account" size="sm" />
+      ) : user ? (
         <div className="user-logout">
           <span>{user.username}</span>
-          <button onClick={logout} className="logout-button">Logout</button>
+          <Button onClick={logout} loading={logoutPending} variant="destructive">Logout</Button>
         </div>
       ) : (
         <div className="login-signup">
-          <Link to="/sign-up">Sign Up</Link>
-          <Link to="/login" className="desktop-login-button">Login</Link>
+          <LinkButton to="/sign-up" variant="plain">Sign Up</LinkButton>
+          <LinkButton to="/login">Login</LinkButton>
         </div>
+      )}
+      {(logoutError || authError) && (
+        <Alert tone="error" className="fs-nav-error">{logoutError || authError}</Alert>
       )}
     </nav>
   );

@@ -51,5 +51,6 @@ describe('App Component', () => {
     render(<App />);
     expect(screen.getByText('NavBar')).toBeInTheDocument();
     expect(screen.getByText('Footer')).toBeInTheDocument();
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 });

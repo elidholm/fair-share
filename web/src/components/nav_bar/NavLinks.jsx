@@ -1,23 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 function NavLinks({ isClicked, closeMenu }) {
-  return(
-    <nav className="NavLinks">
+  const { pathname } = useLocation();
+  const homeActive = pathname === "/" || pathname === "/home";
+  return (
+    <div className="NavLinks">
       <ul id="nav-link-list">
-        <li onClick={ () => isClicked && closeMenu() }>
-          <Link to="/home">Home</Link>
+        <li>
+          <Link
+            to="/home"
+            aria-current={homeActive ? "page" : undefined}
+            className={homeActive ? "active" : undefined}
+            onClick={() => isClicked && closeMenu?.()}
+          >Home</Link>
         </li>
-        <li onClick={ () => isClicked && closeMenu() }>
-          <Link to="/split-costs">Split costs</Link>
-        </li>
-        <li onClick={ () => isClicked && closeMenu() }>
-          <Link to="/budget">Budget</Link>
-        </li>
+        <li><NavLink to="/split-costs" onClick={() => isClicked && closeMenu?.()}>Split costs</NavLink></li>
+        <li><NavLink to="/budget" onClick={() => isClicked && closeMenu?.()}>Budget</NavLink></li>
       </ul>
-    </nav>
-  )
+    </div>
+  );
 }
 
 NavLinks.propTypes = {

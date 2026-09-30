@@ -1,0 +1,107 @@
+.fs-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fs-space-1);
+  min-width: 0;
+  font-family: var(--fs-font-sans);
+}
+
+.fs-field__label {
+  font-size: var(--fs-text-footnote);
+  font-weight: 600;
+  letter-spacing: var(--fs-tracking-caption);
+  color: var(--fs-color-text-secondary);
+}
+
+.fs-field__required {
+  color: var(--fs-color-danger);
+}
+
+.fs-field__control {
+  display: flex;
+  align-items: center;
+  gap: var(--fs-space-2);
+  min-height: var(--fs-hit-target);
+  padding: 0 var(--fs-space-3);
+  border: 1px solid var(--fs-color-separator);
+  border-radius: var(--fs-radius-md);
+  background: var(--fs-color-fill);
+  transition:
+    border-color var(--fs-duration-fast) var(--fs-ease-out),
+    background-color var(--fs-duration-fast) var(--fs-ease-out),
+    box-shadow var(--fs-duration-fast) var(--fs-ease-out);
+
+  &:focus-within {
+    border-color: rgba(var(--fs-color-accent-rgb), 0.8);
+    background: var(--fs-color-fill-strong);
+    box-shadow: var(--fs-focus-ring);
+  }
+
+  .fs-field--invalid & {
+    border-color: var(--fs-color-danger);
+  }
+
+  .fs-field--invalid &:focus-within {
+    box-shadow: 0 0 0 3px rgba(var(--fs-color-danger-rgb), 0.35);
+  }
+
+  .fs-field--disabled & {
+    opacity: 0.5;
+  }
+}
+
+.fs-field .fs-field__input {
+  flex: 1;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: var(--fs-space-2) 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--fs-color-text);
+  font: inherit;
+  font-size: var(--fs-text-body); // ≥16px prevents iOS zoom-on-focus
+  outline: none;
+
+  &::placeholder {
+    color: var(--fs-color-text-tertiary);
+  }
+
+  &:focus {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.fs-field__affix {
+  flex-shrink: 0;
+  color: var(--fs-color-text-secondary);
+  font-size: var(--fs-text-body);
+}
+
+.fs-field__hint,
+.fs-field__error {
+  margin: 0;
+  font-size: var(--fs-text-footnote);
+  letter-spacing: var(--fs-tracking-caption);
+  line-height: var(--fs-leading-snug);
+}
+
+.fs-field__hint {
+  color: var(--fs-color-text-tertiary);
+}
+
+.fs-field__error {
+  color: var(--fs-color-danger);
+
+  &:empty {
+    display: none;
+  }
+}

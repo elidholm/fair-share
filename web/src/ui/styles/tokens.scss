@@ -1,0 +1,134 @@
+// FairShare UI design tokens.
+// Every component reads from these custom properties, so theming, contrast and
+// transparency preferences are handled in one place rather than per component.
+
+:root {
+  color-scheme: dark;
+
+  // Typography — system font first; tracking and leading are size-specific.
+  --fs-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+
+  --fs-text-caption: 0.75rem;
+  --fs-text-footnote: 0.8125rem;
+  --fs-text-body: 1rem;
+  --fs-text-headline: 1.0625rem;
+  --fs-text-title3: 1.25rem;
+  --fs-text-title2: 1.5rem;
+  --fs-text-title1: 2rem;
+
+  --fs-tracking-caption: 0.01em;
+  --fs-tracking-body: 0;
+  --fs-tracking-headline: -0.01em;
+  --fs-tracking-title: -0.02em;
+
+  --fs-leading-tight: 1.15;
+  --fs-leading-snug: 1.3;
+  --fs-leading-body: 1.5;
+
+  // Color
+  --fs-color-text: #f5f7fb;
+  --fs-color-text-secondary: rgba(245, 247, 251, 0.72);
+  --fs-color-text-tertiary: rgba(245, 247, 251, 0.5);
+  --fs-color-accent: #6ee7b7;
+  --fs-color-accent-rgb: 110, 231, 183;
+  --fs-color-primary: #2563eb;
+  --fs-color-primary-hover: #1d4ed8;
+  --fs-color-on-primary: #fff;
+  --fs-color-info: #60a5fa;
+  --fs-color-info-rgb: 96, 165, 250;
+  --fs-color-success: #34d399;
+  --fs-color-success-rgb: 52, 211, 153;
+  --fs-color-warning: #fbbf24;
+  --fs-color-warning-rgb: 251, 191, 36;
+  --fs-color-danger: #f87171;
+  --fs-color-danger-rgb: 248, 113, 113;
+  --fs-color-fill: rgba(255, 255, 255, 0.06);
+  --fs-color-fill-strong: rgba(255, 255, 255, 0.12);
+  --fs-color-fill-stronger: rgba(255, 255, 255, 0.18);
+  --fs-color-separator: rgba(255, 255, 255, 0.1);
+  --fs-color-scrim: rgba(0, 0, 0, 0.5);
+  --fs-focus-ring: 0 0 0 3px rgba(110, 231, 183, 0.6);
+
+  // Materials — heavier material = bigger/more structural surface.
+  --fs-material-thin: rgba(28, 34, 46, 0.45);
+  --fs-material-regular: rgba(22, 28, 38, 0.62);
+  --fs-material-thick: rgba(16, 20, 28, 0.82);
+  --fs-material-edge: rgba(255, 255, 255, 0.08);
+  --fs-blur-thin: 12px;
+  --fs-blur-regular: 20px;
+  --fs-blur-thick: 32px;
+
+  --fs-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24), 0 2px 8px rgba(0, 0, 0, 0.16);
+  --fs-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.24), 0 12px 32px rgba(0, 0, 0, 0.2);
+  --fs-shadow-lg: 0 -8px 24px rgba(0, 0, 0, 0.28), 0 24px 64px rgba(0, 0, 0, 0.36);
+
+  // Shape & space (rem so layout scales with the user's text size)
+  --fs-radius-sm: 0.5rem;
+  --fs-radius-md: 0.75rem;
+  --fs-radius-lg: 1.125rem;
+  --fs-radius-xl: 1.75rem;
+  --fs-radius-pill: 999px;
+
+  --fs-space-1: 0.25rem;
+  --fs-space-2: 0.5rem;
+  --fs-space-3: 0.75rem;
+  --fs-space-4: 1rem;
+  --fs-space-5: 1.25rem;
+  --fs-space-6: 1.5rem;
+  --fs-space-8: 2rem;
+
+  --fs-hit-target: 44px;
+
+  // Motion (CSS is used only for non-gesture state changes; gestures use springs)
+  --fs-duration-press: 100ms;
+  --fs-duration-fast: 160ms;
+  --fs-duration-base: 240ms;
+  --fs-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --fs-press-scale: 0.97;
+
+  --fs-z-overlay: 1000;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --fs-press-scale: 1;
+    --fs-duration-fast: 0ms;
+    --fs-duration-base: 120ms;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --fs-material-thin: #1a202b;
+    --fs-material-regular: #161c26;
+    --fs-material-thick: #10141c;
+    --fs-blur-thin: 0;
+    --fs-blur-regular: 0;
+    --fs-blur-thick: 0;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --fs-color-text-secondary: rgba(245, 247, 251, 0.92);
+    --fs-color-text-tertiary: rgba(245, 247, 251, 0.8);
+    --fs-color-separator: rgba(255, 255, 255, 0.4);
+    --fs-material-edge: rgba(255, 255, 255, 0.5);
+    --fs-material-thin: #1a202b;
+    --fs-material-regular: #161c26;
+    --fs-material-thick: #10141c;
+    --fs-focus-ring: 0 0 0 3px #fff;
+  }
+}
+
+.fs-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

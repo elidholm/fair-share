@@ -1,0 +1,63 @@
+// Shared mixins. They emit no CSS on their own, so they are safe to @use from
+// every component stylesheet.
+
+// Normalises native buttons (and button-shaped links) before variants apply.
+@mixin button-reset {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  transform: none;
+  will-change: auto;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    transform: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--fs-focus-ring);
+  }
+}
+
+@mixin focus-ring {
+  outline: none;
+  box-shadow: var(--fs-focus-ring);
+}
+
+// Feedback on pointer-down, not release.
+@mixin press-feedback {
+  transition:
+    transform var(--fs-duration-press) var(--fs-ease-out),
+    background-color var(--fs-duration-fast) var(--fs-ease-out),
+    color var(--fs-duration-fast) var(--fs-ease-out),
+    opacity var(--fs-duration-fast) var(--fs-ease-out);
+
+  &:active:not(:disabled, [aria-disabled="true"]) {
+    transform: scale(var(--fs-press-scale));
+  }
+}
+
+// Translucent material. $weight: thin | regular | thick
+@mixin material($weight: regular) {
+  background: var(--fs-material-#{$weight});
+  backdrop-filter: blur(var(--fs-blur-#{$weight})) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--fs-blur-#{$weight})) saturate(180%);
+  border: 1px solid var(--fs-material-edge);
+}
+
+@mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled, [aria-disabled="true"]) {
+      @content;
+    }
+  }
+}

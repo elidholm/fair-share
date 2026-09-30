@@ -6,24 +6,61 @@ test.describe('Login Page', () => {
   });
 
   test('should render login form correctly', async ({ page }) => {
-    await expect(page.locator('h1:has-text("Welcome Back")')).toBeVisible();
-    await expect(page.locator('label:has-text("Username")')).toBeVisible();
-    await expect(page.locator('label:has-text("Password")')).toBeVisible();
-    await expect(page.locator('button:has-text("Login")')).toBeVisible();
-    await expect(page.locator('text="Don\'t have an account?"')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Welcome Back' })).toBeVisible();
+    await expect(page.getByLabel('Username')).toBeVisible();
+    await expect(page.getByLabel('Password')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Login' })).toBeVisible();
+    await expect(page.getByText("Don't have an account?")).toBeVisible();
     await expect(page.getByTestId('signup-link-text')).toBeVisible();
   });
 
   test('should show error when required fields are empty', async ({ page }) => {
-    await page.click('button:has-text("Login")');
+    await page.getByRole('button', { name: 'Login' }).click();
 
-    expect(page.locator('#username:invalid')).toBeTruthy();
-    expect(page.locator('#password:invalid')).toBeTruthy();
+    await expect(page.locator('#username:invalid')).toBeVisible();
+    await expect(page.locator('#password:invalid')).toBeVisible();
   });
 
   test('should navigate to sign up page', async ({ page }) => {
     await page.getByTestId('signup-link-text').click();
     await expect(page).toHaveURL('/sign-up');
+  });
+
+  test('should show a loading state while submitting', async ({ page }) => {
+    // Hold the response open until we've confirmed the loading state, rather than
+    // relying on a fixed delay racing against assertion polling.
+    let resolveLogin;
+    const loginResponseReady = new Promise((resolve) => { resolveLogin = resolve; });
+    await page.route('/api/auth/login', async (route) => {
+      await loginResponseReady;
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true }),
+      });
+    });
+    await page.route('/api/auth/me', route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: 1, username: 'testuser', email: 'test@test.com' }),
+      });
+    });
+
+    await page.getByLabel('Username').fill('testuser');
+    await page.getByLabel('Password').fill('password123');
+    // The button's accessible name changes to "Logging in" while loading (its
+    // visible label is hidden), so use a name-independent locator that keeps
+    // resolving to the same element throughout the submission.
+    const submitButton = page.locator('.login__form button[type="submit"]');
+    await expect(submitButton).toHaveAccessibleName('Login');
+    await submitButton.click();
+
+    await expect(submitButton).toHaveAttribute('aria-busy', 'true');
+    await expect(submitButton).toHaveAccessibleName('Logging in');
+
+    resolveLogin();
+    await page.waitForURL('/');
   });
 
   test('should successfully submit valid form', async ({ page }) => {
@@ -34,10 +71,19 @@ test.describe('Login Page', () => {
         body: JSON.stringify({ success: true }),
       });
     });
+    // Login navigates only after AuthContext.login() confirms the session via
+    // /api/auth/me, so that endpoint must be mocked too.
+    await page.route('/api/auth/me', route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: 1, username: 'testuser', email: 'test@test.com' }),
+      });
+    });
 
-    await page.fill('#username', 'testuser');
-    await page.fill('#password', 'password123');
-    await page.click('button:has-text("Login")');
+    await page.getByLabel('Username').fill('testuser');
+    await page.getByLabel('Password').fill('password123');
+    await page.getByRole('button', { name: 'Login' }).click();
 
     await page.waitForURL('/');
     await expect(page).toHaveURL('/');
@@ -52,12 +98,23 @@ test.describe('Login Page', () => {
       });
     });
 
-    await page.fill('#username', 'testuser');
-    await page.fill('#password', 'wrongpassword');
-    await page.click('button:has-text("Login")');
+    await page.getByLabel('Username').fill('testuser');
+    await page.getByLabel('Password').fill('wrongpassword');
+    await page.getByRole('button', { name: 'Login' }).click();
 
-    await expect(page.locator('.error-message')).toBeVisible();
-    await expect(page.locator('.error-message')).toHaveText("Invalid credentials");
+    await expect(page.getByRole('alert')).toBeVisible();
+    await expect(page.getByRole('alert')).toContainText('Invalid credentials');
+  });
+
+  test('should show a network error message when the request fails', async ({ page }) => {
+    await page.route('/api/auth/login', route => route.abort('failed'));
+
+    await page.getByLabel('Username').fill('testuser');
+    await page.getByLabel('Password').fill('password123');
+    await page.getByRole('button', { name: 'Login' }).click();
+
+    await expect(page.getByRole('alert')).toBeVisible();
+    await expect(page.getByRole('alert')).toContainText('Unable to reach the server');
   });
 
   test('should persist auth state after login', async ({ page, context }) => {
@@ -77,9 +134,9 @@ test.describe('Login Page', () => {
       });
     });
 
-    await page.fill('#username', 'testuser');
-    await page.fill('#password', 'password123');
-    await page.click('button:has-text("Login")');
+    await page.getByLabel('Username').fill('testuser');
+    await page.getByLabel('Password').fill('password123');
+    await page.getByRole('button', { name: 'Login' }).click();
 
     // Verify navigation to home page
     await page.waitForURL('/');

@@ -6,24 +6,17 @@ test.describe('Home Page', () => {
   });
 
   test('should display the hero section', async ({ page }) => {
-    // Test main heading and tagline
     await expect(page.getByRole('heading', { name: 'Welcome to Fair Share' })).toBeVisible();
     await expect(page.getByText('Simplifying shared finances for couples and roommates')).toBeVisible();
   });
 
   test('should display feature cards with working links', async ({ page }) => {
-    // Test both feature cards
-    const featureCards = await page.locator('.feature-card').all();
-    expect(featureCards.length).toBe(2);
-
-    // Test Split Costs feature
     await expect(page.getByRole('heading', { name: 'Split Costs' })).toBeVisible();
     await expect(page.getByText('Easily divide expenses based on income')).toBeVisible();
     const splitCostsLink = page.getByRole('link', { name: 'Split Expenses' });
     await expect(splitCostsLink).toBeVisible();
     await expect(splitCostsLink).toHaveAttribute('href', '/split-costs');
 
-    // Test Budget Planning feature
     await expect(page.getByRole('heading', { name: 'Budget Planning' })).toBeVisible();
     await expect(page.getByText('Create and manage your monthly budget')).toBeVisible();
     const budgetLink = page.getByRole('link', { name: 'Plan Budget' });
@@ -34,10 +27,9 @@ test.describe('Home Page', () => {
   test('should display the "How It Works" steps', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'How It Works' })).toBeVisible();
 
-    const steps = await page.locator('.step').all();
+    const steps = await page.locator('.home__steps').getByRole('listitem').all();
     expect(steps.length).toBe(4);
 
-    // Verify each step
     const stepTexts = [
       'Enter individual incomes for fair expense distribution',
       'Add your shared expenses with descriptions and amounts',
@@ -51,22 +43,19 @@ test.describe('Home Page', () => {
     }
   });
 
-  test('should have working call-to-action buttons', async ({ page }) => {
+  test('should have working call-to-action links', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Ready to simplify your shared finances?' })).toBeVisible();
 
-    const primaryButton = page.getByRole('link', { name: 'Start Splitting Costs' });
-    await expect(primaryButton).toBeVisible();
-    await expect(primaryButton).toHaveClass(/primary-button/);
-    await expect(primaryButton).toHaveAttribute('href', '/split-costs');
+    const primaryLink = page.getByRole('link', { name: 'Start Splitting Costs' });
+    await expect(primaryLink).toBeVisible();
+    await expect(primaryLink).toHaveAttribute('href', '/split-costs');
 
-    const secondaryButton = page.getByRole('link', { name: 'Create a Budget' });
-    await expect(secondaryButton).toBeVisible();
-    await expect(secondaryButton).toHaveClass(/secondary-button/);
-    await expect(secondaryButton).toHaveAttribute('href', '/budget');
+    const secondaryLink = page.getByRole('link', { name: 'Create a Budget' });
+    await expect(secondaryLink).toBeVisible();
+    await expect(secondaryLink).toHaveAttribute('href', '/budget');
   });
 
   test('should navigate to correct pages when clicking links', async ({ page }) => {
-    // Test feature links
     await page.getByRole('link', { name: 'Split Expenses' }).click();
     await expect(page).toHaveURL(/\/split-costs/);
     await page.goBack();
@@ -75,12 +64,28 @@ test.describe('Home Page', () => {
     await expect(page).toHaveURL(/\/budget/);
     await page.goBack();
 
-    // Test CTA links
     await page.getByRole('link', { name: 'Start Splitting Costs' }).click();
     await expect(page).toHaveURL(/\/split-costs/);
     await page.goBack();
 
     await page.getByRole('link', { name: 'Create a Budget' }).click();
     await expect(page).toHaveURL(/\/budget/);
+  });
+
+  test('should not overflow the document at the narrowest supported viewport', async ({ page }) => {
+    // 280px matches index.scss's `body { min-width: 280px; }`. The main
+    // document must never scroll horizontally, even though the mobile nav's
+    // link row intentionally scrolls within its own container.
+    await page.setViewportSize({ width: 280, height: 800 });
+    await page.goto('/');
+
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(280);
+
+    const home = page.locator('.home');
+    await expect(home).toBeVisible();
+    const box = await home.boundingBox();
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(280);
   });
 });
