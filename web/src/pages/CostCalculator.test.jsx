@@ -83,7 +83,7 @@ describe("CostCalculator", () => {
 
       const input = screen.getByLabelText("Income for Alice");
       expect(input).toHaveValue(null);
-      fireEvent.change(input, { target: { value: "1000" } });
+      fireEvent.input(input, { target: { value: "1000" } });
       expect(input).toHaveValue(1000);
       expect(JSON.parse(localStorage.getItem("incomes"))).toEqual([{ name: "Alice", amount: 1000 }]);
       expect(screen.getByLabelText("New income")).toHaveValue("");
@@ -108,7 +108,7 @@ describe("CostCalculator", () => {
       seed([{ name: "Test", amount: 1000 }]);
       render(<CostCalculator />);
       const input = screen.getByLabelText("Income for Test");
-      fireEvent.change(input, { target: { value: "" } });
+      fireEvent.input(input, { target: { value: "" } });
       expect(input).toHaveValue(null);
       expect(JSON.parse(localStorage.getItem("incomes"))).toEqual([{ name: "Test", amount: "" }]);
     });
@@ -118,8 +118,8 @@ describe("CostCalculator", () => {
       render(<CostCalculator />);
       const income = screen.getByLabelText("Income for Test");
       const expense = screen.getByLabelText("Amount for Rent");
-      fireEvent.change(income, { target: { value: "abc" } });
-      fireEvent.change(expense, { target: { value: "abc" } });
+      fireEvent.input(income, { target: { value: "abc" } });
+      fireEvent.input(expense, { target: { value: "abc" } });
       expect(income).toHaveValue(null);
       expect(expense).toHaveValue(null);
     });
@@ -160,7 +160,7 @@ describe("CostCalculator", () => {
       vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
         throw new Error("QuotaExceededError");
       });
-      fireEvent.change(screen.getByLabelText("Income for Alice"), { target: { value: "2" } });
+      fireEvent.input(screen.getByLabelText("Income for Alice"), { target: { value: "2" } });
       expect(screen.getByRole("alert")).toHaveTextContent(/Couldn’t save incomes on this device/);
     });
   });
@@ -219,32 +219,75 @@ describe("CostCalculator", () => {
       shares().forEach((share) => expect(share).toHaveTextContent("500.00 kr (50.00%)"));
     });
 
-    it("flags missing amounts inline once a split is requested", () => {
-      seed([{ name: "Alice", amount: 1000 }, { name: "Bob", amount: "" }], [{ name: "Rent", amount: "" }]);
+    it("treats blank amounts as 0 in totals and proportional splits", () => {
+      seed(
+        [{ name: "Alice", amount: 1000 }, { name: "Bob", amount: "" }],
+        [{ name: "Rent", amount: 900 }, { name: "Gym", amount: "  " }],
+      );
       render(<CostCalculator />);
 
-      expect(screen.getByLabelText("Income for Bob")).not.toHaveAttribute("aria-invalid");
+      expect(screen.getByRole("status", { name: "Total incomes" })).toHaveTextContent("1000 kr");
+      expect(screen.getByRole("status", { name: "Total expenses" })).toHaveTextContent("900 kr");
       fireEvent.click(splitButton());
 
-      expect(screen.getByText("Enter an income for Bob, or turn on Split equally.")).toBeInTheDocument();
-      expect(screen.getByText("Enter a valid amount for Rent, or remove it.")).toBeInTheDocument();
-      expect(screen.getByLabelText("Income for Bob")).toHaveAttribute("aria-invalid", "true");
-      expect(screen.getByLabelText("Amount for Rent")).toHaveAccessibleDescription("Enter an amount, or remove this row.");
-
-      // Incomes aren't needed for an equal split.
-      fireEvent.click(screen.getByRole("switch", { name: "Split equally" }));
       expect(screen.getByLabelText("Income for Bob")).not.toHaveAttribute("aria-invalid");
-      expect(screen.queryByText(/Enter an income for Bob/)).not.toBeInTheDocument();
+      expect(screen.getByLabelText("Amount for Gym")).not.toHaveAttribute("aria-invalid");
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      const [alice, bob] = shares();
+      expect(alice).toHaveTextContent("Alice's share900.00 kr (100.00%)");
+      expect(bob).toHaveTextContent("Bob's share0.00 kr (0.00%)");
+    });
 
-      fireEvent.change(screen.getByLabelText("Amount for Rent"), { target: { value: "900" } });
-      shares().forEach((share) => expect(share).toHaveTextContent("450.00 kr (50.00%)"));
+    it("treats a cleared field as 0 and keeps it blank rather than writing 0", () => {
+      seed([{ name: "Alice", amount: 1000 }], [{ name: "Rent", amount: 500 }]);
+      render(<CostCalculator />);
+
+      fireEvent.input(screen.getByLabelText("Amount for Rent"), { target: { value: "" } });
+      expect(screen.getByLabelText("Amount for Rent")).toHaveValue(null);
+      expect(screen.getByLabelText("Amount for Rent")).not.toHaveAttribute("aria-invalid");
+      expect(screen.getByRole("status", { name: "Total expenses" })).toHaveTextContent("0 kr");
+      expect(JSON.parse(localStorage.getItem("expenses"))).toEqual([{ name: "Rent", amount: "" }]);
+
+      fireEvent.click(splitButton());
+      expect(shares()[0]).toHaveTextContent("0.00 kr (100.00%)");
+    });
+
+    it("still blocks a proportional split when every income is blank", () => {
+      seed([{ name: "A", amount: "" }, { name: "B", amount: "" }], [{ name: "Rent", amount: 1000 }]);
+      render(<CostCalculator />);
+      fireEvent.click(splitButton());
+
+      expect(screen.getByText(/Total income is 0 kr/)).toBeInTheDocument();
+      expect(screen.queryByText(/NaN/)).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole("switch", { name: "Split equally" }));
+      shares().forEach((share) => expect(share).toHaveTextContent("500.00 kr (50.00%)"));
+    });
+
+    it("does not mistake text the browser can't parse for a blank 0", () => {
+      seed([{ name: "Alice", amount: 1000 }], [{ name: "Rent", amount: 500 }]);
+      render(<CostCalculator />);
+      const rent = screen.getByLabelText("Amount for Rent");
+
+      // Number inputs report unparsable text (e.g. "1e") as "" with validity.badInput set.
+      Object.defineProperty(rent, "validity", { configurable: true, value: { badInput: true } });
+      fireEvent.input(rent, { target: { value: "" } });
+      expect(rent).toHaveAccessibleDescription("Enter a number, like 1200.");
+      fireEvent.click(splitButton());
+      expect(screen.getByText("Enter a valid amount for Rent, or remove it.")).toBeInTheDocument();
+      expect(screen.queryByRole("list", { name: "Shares" })).not.toBeInTheDocument();
+
+      Object.defineProperty(rent, "validity", { configurable: true, value: { badInput: false } });
+      fireEvent.input(rent, { target: { value: "800" } });
+      expect(rent).not.toHaveAttribute("aria-invalid");
+      expect(shares()[0]).toHaveTextContent("800.00 kr (100.00%)");
     });
 
     it("rejects negative amounts with inline guidance and excludes them from totals", () => {
       seed([{ name: "Alice", amount: 1000 }], [{ name: "Rent", amount: 500 }]);
       render(<CostCalculator />);
 
-      fireEvent.change(screen.getByLabelText("Amount for Rent"), { target: { value: "-5" } });
+      fireEvent.input(screen.getByLabelText("Amount for Rent"), { target: { value: "-5" } });
       expect(screen.getByLabelText("Amount for Rent")).toHaveAccessibleDescription("Amount can’t be negative.");
       expect(screen.getByRole("status", { name: "Total expenses" })).toHaveTextContent("0 kr");
 
@@ -357,7 +400,7 @@ describe("CostCalculator", () => {
       });
       render(<CostCalculator />);
 
-      fireEvent.change(await screen.findByLabelText("Income for A"), { target: { value: "5" } });
+      fireEvent.input(await screen.findByLabelText("Income for A"), { target: { value: "5" } });
       await waitFor(() =>
         expect(fetchMock).toHaveBeenCalledWith("/api/incomes", expect.objectContaining({
           method: "POST",
@@ -378,7 +421,7 @@ describe("CostCalculator", () => {
       });
       render(<CostCalculator />);
 
-      fireEvent.change(await screen.findByLabelText("Amount for Rent"), { target: { value: "2" } });
+      fireEvent.input(await screen.findByLabelText("Amount for Rent"), { target: { value: "2" } });
       const alert = await screen.findByRole("alert");
       expect(alert).toHaveTextContent("Couldn’t save expenses to your account");
       expect(JSON.parse(localStorage.getItem("expenses"))).toEqual([{ name: "Rent", amount: 2 }]);

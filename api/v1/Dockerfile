@@ -21,14 +21,16 @@ CMD ["npm", "run", "dev"]
 
 FROM base AS production
 ENV NODE_ENV=production
-RUN apk add --no-cache tini
+RUN apk add --no-cache tini su-exec
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 COPY ./src ./src
+COPY --chmod=755 fairshare-entrypoint.sh /usr/local/bin/fairshare-entrypoint.sh
 RUN mkdir -p /app/database && chown -R node:node /app
-USER node
+# No `USER node`: the entrypoint fixes bind-mounted database ownership as root, then
+# runs the API as node via su-exec.
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:3001/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
-ENTRYPOINT ["/sbin/tini", "--"]
+ENTRYPOINT ["/sbin/tini", "--", "fairshare-entrypoint.sh"]
 CMD ["node", "src/app.js"]

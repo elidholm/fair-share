@@ -45,7 +45,6 @@ const COPY = {
 };
 
 const AMOUNT_MESSAGES = {
-  missing: "Enter an amount, or remove this row.",
   invalid: "Enter a number, like 1200.",
   negative: "Amount can’t be negative.",
 };
@@ -75,18 +74,24 @@ function readLocal(kind) {
   }
 }
 
-/** Returns why an amount can't be used, or null if it's a valid, non-negative, finite number. */
+function isBlank(amount) {
+  return amount === null || amount === undefined || (typeof amount === "string" && amount.trim() === "");
+}
+
+/**
+ * Returns why an amount can't be used, or null if it's usable. A blank amount is usable
+ * and counts as 0; anything else must be a finite, non-negative number.
+ */
 function amountIssue(amount) {
-  if (amount === "" || amount === null || amount === undefined) return "missing";
+  if (isBlank(amount)) return null;
   const value = typeof amount === "number" ? amount : Number(amount);
-  if (typeof amount === "string" && amount.trim() === "") return "missing";
   if (!Number.isFinite(value)) return "invalid";
   if (value < 0) return "negative";
   return null;
 }
 
 function toNumber(amount) {
-  return amountIssue(amount) ? 0 : Number(amount);
+  return isBlank(amount) || amountIssue(amount) ? 0 : Number(amount);
 }
 
 function formatKr(value) {
@@ -128,7 +133,6 @@ function EntrySection({
   items,
   loading,
   fieldErrors,
-  hints,
   total,
   onAmountChange,
   onRemove,
@@ -191,10 +195,10 @@ function EntrySection({
                   step="any"
                   suffix="kr"
                   placeholder="0"
-                  hint={hints[index]}
                   error={fieldErrors[index]}
                   value={item.amount === "" ? "" : String(item.amount)}
-                  onChange={(event) => onAmountChange(index, event.target.value)}
+                  onInput={(event) =>
+                    onAmountChange(index, event.target.value, event.target.validity?.badInput === true)}
                 />
                 <IconButton
                   className="cost-calculator__remove"
@@ -246,7 +250,6 @@ EntrySection.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string, amount: PropTypes.any })).isRequired,
   loading: PropTypes.bool.isRequired,
   fieldErrors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  hints: PropTypes.arrayOf(PropTypes.string).isRequired,
   total: PropTypes.number.isRequired,
   onAmountChange: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
@@ -266,6 +269,9 @@ function CostCalculator() {
   const [reloadKey, setReloadKey] = useState(0);
   const [splitEqually, setSplitEqually] = useState(false);
   const [splitRequested, setSplitRequested] = useState(false);
+  // A number input reports text it can't parse (e.g. "1e") as "", which would otherwise read as
+  // a blank 0. Remember those row objects so they stay invalid until the user edits them again.
+  const [unparsableRows] = useState(() => new WeakSet());
   const [resetOpen, setResetOpen] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [resetError, setResetError] = useState(null);
@@ -356,8 +362,20 @@ function CostCalculator() {
     if (user) saveRemote(kind, items);
   }
 
-  function handleAmountChange(kind, index, raw) {
-    const items = lists[kind].map((item, i) => (i === index ? { ...item, amount: amountFromInput(raw) } : item));
+  function handleAmountChange(kind, index, raw, unparsable = false) {
+    const current = lists[kind][index];
+    if (!current) return;
+    const amount = amountFromInput(raw);
+    // `input` fires for keystrokes the number input can't represent, which leave the value
+    // untouched (typing "e" into a blank field). Only skip when the validity hasn't moved
+    // either, so those transitions still reach the UI without resaving on every keypress.
+    if (amount === current.amount && unparsable === unparsableRows.has(current)) return;
+    const items = lists[kind].map((item, i) => {
+      if (i !== index) return item;
+      const next = { ...item, amount };
+      if (unparsable) unparsableRows.add(next);
+      return next;
+    });
     commit(kind, items);
   }
 
@@ -439,41 +457,25 @@ function CostCalculator() {
 
   // Validation and totals
   const { incomes, expenses } = lists;
-  const incomeIssues = incomes.map((item) => amountIssue(item.amount));
-  const expenseIssues = expenses.map((item) => amountIssue(item.amount));
+  const issueFor = (item) => (unparsableRows.has(item) ? "invalid" : amountIssue(item.amount));
+  const incomeIssues = incomes.map(issueFor);
+  const expenseIssues = expenses.map(issueFor);
   const totalIncome = incomes.reduce((sum, item) => sum + toNumber(item.amount), 0);
   const totalExpenses = expenses.reduce((sum, item) => sum + toNumber(item.amount), 0);
   const incomeNames = displayNames(incomes);
   const expenseNames = displayNames(expenses);
 
-  const incomeRequired = !splitEqually;
-  const fieldError = (issue, required) => {
-    if (!issue) return undefined;
-    if (issue === "missing") {
-      return splitRequested && required ? AMOUNT_MESSAGES.missing : undefined;
-    }
-    return AMOUNT_MESSAGES[issue];
-  };
-  const incomeErrors = incomeIssues.map((issue) => fieldError(issue, incomeRequired));
-  const expenseErrors = expenseIssues.map((issue) => fieldError(issue, true));
-  const incomeHints = incomeIssues.map((issue) =>
-    issue === "missing" && splitEqually ? "Not needed when splitting equally." : undefined,
-  );
-  const expenseHints = expenses.map(() => undefined);
+  const incomeErrors = incomeIssues.map((issue) => (issue ? AMOUNT_MESSAGES[issue] : undefined));
+  const expenseErrors = expenseIssues.map((issue) => (issue ? AMOUNT_MESSAGES[issue] : undefined));
 
   const splitProblems = [];
   const namesWith = (issues, names, match) => names.filter((_, i) => match(issues[i]));
-  const isBad = (issue) => issue === "invalid" || issue === "negative";
   if (incomes.length === 0) {
     splitProblems.push("Add at least one person under Incomes before splitting.");
   }
-  const badIncomes = namesWith(incomeIssues, incomeNames, isBad);
+  const badIncomes = namesWith(incomeIssues, incomeNames, Boolean);
   if (badIncomes.length > 0) {
     splitProblems.push(`Fix the income for ${joinNames(badIncomes)}.`);
-  }
-  const missingIncomes = namesWith(incomeIssues, incomeNames, (issue) => issue === "missing");
-  if (!splitEqually && missingIncomes.length > 0) {
-    splitProblems.push(`Enter an income for ${joinNames(missingIncomes)}, or turn on Split equally.`);
   }
   const badExpenses = namesWith(expenseIssues, expenseNames, Boolean);
   if (badExpenses.length > 0) {
@@ -538,9 +540,8 @@ function CostCalculator() {
           items={incomes}
           loading={loading.incomes}
           fieldErrors={incomeErrors}
-          hints={incomeHints}
           total={totalIncome}
-          onAmountChange={(index, raw) => handleAmountChange("incomes", index, raw)}
+          onAmountChange={(index, raw, unparsable) => handleAmountChange("incomes", index, raw, unparsable)}
           onRemove={(index) => handleRemove("incomes", index)}
           onAdd={(name) => handleAdd("incomes", name)}
         />
@@ -549,9 +550,8 @@ function CostCalculator() {
           items={expenses}
           loading={loading.expenses}
           fieldErrors={expenseErrors}
-          hints={expenseHints}
           total={totalExpenses}
-          onAmountChange={(index, raw) => handleAmountChange("expenses", index, raw)}
+          onAmountChange={(index, raw, unparsable) => handleAmountChange("expenses", index, raw, unparsable)}
           onRemove={(index) => handleRemove("expenses", index)}
           onAdd={(name) => handleAdd("expenses", name)}
         />
