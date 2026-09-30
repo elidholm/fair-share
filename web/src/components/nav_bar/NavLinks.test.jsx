@@ -26,4 +26,13 @@ describe('NavLinks Component', () => {
     fireEvent.click(screen.getByText('Home'));
     expect(mockCloseMenu).toHaveBeenCalled();
   });
+
+  it('marks the home link current on the root route', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <NavLinks />
+      </MemoryRouter>
+    );
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
+  });
 });

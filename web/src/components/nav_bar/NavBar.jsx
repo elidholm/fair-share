@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DesktopNavigation from "./DesktopNavigation.jsx";
 import MobileNavigation from "./MobileNavigation.jsx";
+import "./NavBar.scss";
 
 const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false);

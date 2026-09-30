@@ -1,10 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { BUDGET_CLEARED_EVENT, BUDGET_STORAGE_KEY } from '../pages/budgetStorage.js';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState('');
+  const [logoutError, setLogoutError] = useState('');
+  const [logoutPending, setLogoutPending] = useState(false);
 
   const login = async () => {
     try {
@@ -14,35 +19,48 @@ export function AuthProvider({ children }) {
       if (!response || typeof response.ok !== 'boolean') {
         throw new Error('Invalid authentication response');
       }
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
+      if (!response.ok) {
+        throw new Error('Could not confirm sign-in');
       }
+      const userData = await response.json();
+      setUser(userData);
+      setAuthError('');
+      setLogoutError('');
     } catch (error) {
       console.error('Auth check failed:', error);
+      throw error;
     }
   };
 
   const logout = async () => {
+    setLogoutError('');
+    setLogoutPending(true);
+    let signedOut = false;
     try {
-      await fetch('/api/auth/logout', {
+      const response = await fetch('/api/auth/logout', {
         method: 'POST',
         credentials: 'include'
       });
-
+      if (!response || !response.ok) {
+        throw new Error('Sign out failed. Try again.');
+      }
+      setUser(null);
+      signedOut = true;
       localStorage.removeItem("incomes");
       localStorage.removeItem("expenses");
-
-      setUser(null);
+      localStorage.removeItem(BUDGET_STORAGE_KEY);
+      window.dispatchEvent(new Event(BUDGET_CLEARED_EVENT));
     } catch (error) {
       console.error('Logout failed:', error);
+      setLogoutError(error.message || 'Sign out failed. Try again.');
+      if (signedOut) window.dispatchEvent(new Event(BUDGET_CLEARED_EVENT));
+    } finally {
+      setLogoutPending(false);
     }
   };
 
   const checkAuth = async () => {
-    console.log('Checking authentication status...');
     try {
-      console.log('Fetching user data from /api/auth/me');
       const response = await fetch('/api/auth/me', {
         credentials: 'include'
       });
@@ -55,6 +73,9 @@ export function AuthProvider({ children }) {
       }
     } catch (error) {
       console.error('Auth check failed:', error);
+      setAuthError('Could not verify your session. Guest features remain available.');
+    } finally {
+      setAuthLoading(false);
     }
   };
 
@@ -63,7 +84,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, authLoading, authError, login, logout, logoutError, logoutPending }}>
       {children}
     </AuthContext.Provider>
   );

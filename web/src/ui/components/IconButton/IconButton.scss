@@ -1,0 +1,73 @@
+@use "../../styles/mixins" as *;
+
+.fs-icon-button {
+  @include button-reset;
+  @include press-feedback;
+
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: var(--fs-radius-pill);
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &--md {
+    width: var(--fs-hit-target);
+    height: var(--fs-hit-target);
+  }
+
+  &--sm {
+    width: 2rem;
+    height: 2rem;
+
+    // Invisible hit padding up to the 44px minimum.
+    &::before {
+      content: "";
+      position: absolute;
+      inset: calc((2rem - var(--fs-hit-target)) / 2);
+    }
+  }
+
+  &--secondary {
+    background: var(--fs-color-fill-strong);
+    color: var(--fs-color-text);
+    @include hover { background: var(--fs-color-fill-stronger); }
+  }
+
+  &--tinted {
+    background: rgba(var(--fs-color-accent-rgb), 0.16);
+    color: var(--fs-color-accent);
+    @include hover { background: rgba(var(--fs-color-accent-rgb), 0.24); }
+  }
+
+  &--plain {
+    color: var(--fs-color-text-secondary);
+    @include hover {
+      background: var(--fs-color-fill);
+      color: var(--fs-color-text);
+    }
+  }
+
+  &--destructive {
+    color: var(--fs-color-danger);
+    @include hover { background: rgba(var(--fs-color-danger-rgb), 0.16); }
+  }
+}
+
+.fs-icon-button__icon {
+  display: inline-flex;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .fs-icon-button--sm & svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}

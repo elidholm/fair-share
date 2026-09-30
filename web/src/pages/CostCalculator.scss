@@ -1,0 +1,178 @@
+// Page layout and typography for the cost calculator. Components come from
+// src/ui; this file is self-contained and doesn't rely on global page rules.
+
+.cost-calculator {
+  flex: 1;
+  width: 100%;
+  font-family: var(--fs-font-sans);
+  color: var(--fs-color-text);
+  max-width: 64rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fs-space-4);
+}
+
+.cost-calculator__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fs-space-3);
+
+  h1 {
+    margin: 0;
+    text-align: left;
+    color: var(--fs-color-text);
+    font-size: var(--fs-text-title1);
+    font-weight: 700;
+    letter-spacing: var(--fs-tracking-title);
+    line-height: var(--fs-leading-tight);
+  }
+}
+
+.cost-calculator__messages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fs-space-2);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.cost-calculator__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--fs-space-4);
+
+  @media (min-width: 48rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.cost-calculator__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fs-space-3);
+  min-width: 0;
+}
+
+.cost-calculator .cost-calculator__heading {
+  margin: 0;
+  text-align: left;
+  color: var(--fs-color-text);
+  font-size: var(--fs-text-title3);
+  font-weight: 700;
+  letter-spacing: var(--fs-tracking-headline);
+  line-height: var(--fs-leading-tight);
+}
+
+.cost-calculator__rows,
+.cost-calculator__shares,
+.cost-calculator__problems {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fs-space-2);
+}
+
+// Defensive reset so global `li` rules can't restyle these rows.
+.cost-calculator .cost-calculator__row,
+.cost-calculator .cost-calculator__share,
+.cost-calculator .cost-calculator__problems li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-weight: inherit;
+  color: inherit;
+
+  &:hover {
+    background: none;
+    box-shadow: none;
+  }
+}
+
+.cost-calculator .cost-calculator__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--fs-space-2);
+
+  // Fixed label height so the remove button can line up with the input.
+  .fs-field__label {
+    line-height: var(--fs-leading-snug);
+  }
+}
+
+.cost-calculator__amount {
+  flex: 1;
+}
+
+.cost-calculator__remove {
+  flex-shrink: 0;
+  margin-top: calc(
+    var(--fs-text-footnote) * var(--fs-leading-snug) + var(--fs-space-1) + (var(--fs-hit-target) - 2rem) / 2
+  );
+}
+
+.cost-calculator__add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--fs-space-2);
+}
+
+.cost-calculator__add-field {
+  flex: 1 1 12rem;
+}
+
+.cost-calculator__total {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--fs-space-2);
+  margin: 0;
+  padding-top: var(--fs-space-3);
+  border-top: 1px solid var(--fs-color-separator);
+  color: var(--fs-color-text-secondary);
+
+  output {
+    color: var(--fs-color-text);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.cost-calculator .cost-calculator__share {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--fs-space-1) var(--fs-space-3);
+  padding: var(--fs-space-3);
+  border-radius: var(--fs-radius-md);
+  background: var(--fs-color-fill);
+}
+
+.cost-calculator__share-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cost-calculator__problems {
+  gap: var(--fs-space-1);
+}
+
+.cost-calculator__sheet-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--fs-space-2);
+}
+
+.cost-calculator__sheet-text {
+  margin: 0;
+  color: var(--fs-color-text-secondary);
+}

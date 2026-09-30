@@ -1,0 +1,111 @@
+@use "../../styles/mixins" as *;
+
+.fs-sheet-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--fs-z-overlay);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-family: var(--fs-font-sans);
+
+  @media (min-width: 640px) {
+    padding: var(--fs-space-4);
+  }
+}
+
+.fs-sheet__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--fs-color-scrim);
+  opacity: 0;
+}
+
+.fs-sheet {
+  @include material(thick);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 35rem;
+  max-height: calc(100dvh - env(safe-area-inset-top, 0px) - var(--fs-space-6));
+  border-bottom: 0;
+  border-radius: var(--fs-radius-xl) var(--fs-radius-xl) 0 0;
+  box-shadow: var(--fs-shadow-lg);
+  color: var(--fs-color-text);
+  outline: none;
+  will-change: transform;
+
+  @media (min-width: 640px) {
+    border-bottom: 1px solid var(--fs-material-edge);
+    border-radius: var(--fs-radius-xl);
+  }
+}
+
+.fs-sheet__header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--fs-space-3);
+  padding: var(--fs-space-5) var(--fs-space-5) var(--fs-space-3);
+  cursor: grab;
+  touch-action: none; // the header is the drag surface
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.fs-sheet__grabber {
+  position: absolute;
+  top: var(--fs-space-2);
+  left: 50%;
+  width: 2.25rem;
+  height: 0.3125rem;
+  border-radius: var(--fs-radius-pill);
+  background: var(--fs-color-fill-stronger);
+  transform: translateX(-50%);
+}
+
+.fs-sheet__titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.fs-sheet .fs-sheet__title {
+  margin: 0;
+  font-size: var(--fs-text-title3);
+  font-weight: 700;
+  line-height: var(--fs-leading-tight);
+  letter-spacing: var(--fs-tracking-title);
+  text-align: start;
+  color: var(--fs-color-text);
+}
+
+.fs-sheet__description {
+  margin: var(--fs-space-1) 0 0;
+  font-size: var(--fs-text-footnote);
+  line-height: var(--fs-leading-snug);
+  color: var(--fs-color-text-secondary);
+}
+
+.fs-sheet__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 var(--fs-space-5) var(--fs-space-5);
+}
+
+.fs-sheet__footer {
+  display: flex;
+  gap: var(--fs-space-2);
+  padding: var(--fs-space-3) var(--fs-space-5) calc(var(--fs-space-5) + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--fs-color-separator);
+
+  > * {
+    flex: 1;
+  }
+}

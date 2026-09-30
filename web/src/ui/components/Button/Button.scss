@@ -1,0 +1,128 @@
+@use "../../styles/mixins" as *;
+
+.fs-button {
+  @include button-reset;
+  @include press-feedback;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--fs-radius-pill);
+  font-family: var(--fs-font-sans);
+  font-weight: 600;
+  letter-spacing: var(--fs-tracking-headline);
+  line-height: var(--fs-leading-tight);
+  white-space: nowrap;
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
+
+  &--loading {
+    cursor: progress;
+  }
+
+  // Sizes — md/lg meet the 44px minimum hit target.
+  &--sm {
+    min-height: 2rem;
+    padding: 0 var(--fs-space-3);
+    font-size: var(--fs-text-footnote);
+  }
+
+  &--md {
+    min-height: var(--fs-hit-target);
+    padding: 0 var(--fs-space-5);
+    font-size: var(--fs-text-body);
+  }
+
+  &--lg {
+    min-height: 3.25rem;
+    padding: 0 var(--fs-space-6);
+    font-size: var(--fs-text-headline);
+  }
+
+  &--full-width {
+    display: flex;
+    width: 100%;
+  }
+
+  // Variants
+  &--primary {
+    background: var(--fs-color-primary);
+    color: var(--fs-color-on-primary);
+    @include hover { background: var(--fs-color-primary-hover); }
+  }
+
+  &--secondary {
+    background: var(--fs-color-fill-strong);
+    color: var(--fs-color-text);
+    @include hover { background: var(--fs-color-fill-stronger); }
+  }
+
+  &--tinted {
+    background: rgba(var(--fs-color-accent-rgb), 0.16);
+    color: var(--fs-color-accent);
+    @include hover { background: rgba(var(--fs-color-accent-rgb), 0.24); }
+  }
+
+  &--plain {
+    background: transparent;
+    color: var(--fs-color-accent);
+    @include hover { background: var(--fs-color-fill); }
+  }
+
+  &--destructive {
+    background: rgba(var(--fs-color-danger-rgb), 0.16);
+    color: var(--fs-color-danger);
+    @include hover { background: rgba(var(--fs-color-danger-rgb), 0.24); }
+  }
+}
+
+.fs-link-button {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.fs-button__content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fs-space-2);
+
+  .fs-button--loading & {
+    visibility: hidden;
+  }
+}
+
+.fs-button__icon {
+  display: inline-flex;
+
+  svg {
+    width: 1.15em;
+    height: 1.15em;
+  }
+}
+
+.fs-button__spinner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+@media (prefers-contrast: more) {
+  .fs-button--secondary,
+  .fs-button--tinted,
+  .fs-button--plain,
+  .fs-button--destructive {
+    border: 1px solid currentcolor;
+  }
+}

@@ -1,0 +1,110 @@
+@use "../../styles/mixins" as *;
+
+$track-width: 3.1875rem; // 51px
+$track-height: 1.9375rem; // 31px
+$thumb-inset: 0.125rem;
+$thumb-size: $track-height - 2 * $thumb-inset;
+$thumb-stretch: 0.4375rem;
+
+.fs-switch-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fs-space-4);
+  min-height: var(--fs-hit-target);
+  font-family: var(--fs-font-sans);
+
+  &--disabled {
+    opacity: 0.5;
+  }
+}
+
+.fs-switch-field__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.fs-switch-field__label {
+  font-size: var(--fs-text-body);
+  font-weight: 500;
+  color: var(--fs-color-text);
+  cursor: pointer;
+
+  .fs-switch-field--disabled & {
+    cursor: not-allowed;
+  }
+}
+
+.fs-switch-field__description {
+  font-size: var(--fs-text-footnote);
+  letter-spacing: var(--fs-tracking-caption);
+  color: var(--fs-color-text-tertiary);
+}
+
+.fs-switch {
+  @include button-reset;
+
+  position: relative;
+  flex-shrink: 0;
+  width: $track-width;
+  height: $track-height;
+  border-radius: var(--fs-radius-pill);
+  background: var(--fs-color-fill-stronger);
+  transition: background-color var(--fs-duration-base) var(--fs-ease-out);
+
+  &[aria-checked="true"] {
+    background: var(--fs-color-success);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  // Extend the hit area vertically to 44px.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: calc(($track-height - var(--fs-hit-target)) / 2) 0;
+  }
+}
+
+.fs-switch__thumb {
+  position: absolute;
+  top: $thumb-inset;
+  left: $thumb-inset;
+  width: $thumb-size;
+  height: $thumb-size;
+  border-radius: var(--fs-radius-pill);
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 1px 1px rgba(0, 0, 0, 0.16);
+  transition:
+    transform var(--fs-duration-base) var(--fs-ease-out),
+    width var(--fs-duration-press) var(--fs-ease-out);
+
+  [aria-checked="true"] > & {
+    transform: translateX($track-width - $thumb-size - 2 * $thumb-inset);
+  }
+
+  // Feedback on press: the thumb stretches toward where it's going.
+  .fs-switch:active:not(:disabled) > & {
+    width: $thumb-size + $thumb-stretch;
+  }
+
+  .fs-switch[aria-checked="true"]:active:not(:disabled) > & {
+    transform: translateX($track-width - $thumb-size - $thumb-stretch - 2 * $thumb-inset);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-switch__thumb {
+    transition: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .fs-switch {
+    border: 1px solid var(--fs-color-separator);
+  }
+}
