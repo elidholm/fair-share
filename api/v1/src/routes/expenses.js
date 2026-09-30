@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db.js';
 import { verifyToken } from '../utils/auth.js';
+import { sendRouteError } from '../utils/http.js';
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.get('/', async (req, res) => {
       expenses: user.expenses ? JSON.parse(user.expenses) : []
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendRouteError(res, error, 'load expenses');
   }
 });
 
@@ -33,16 +34,20 @@ router.post('/', async (req, res) => {
     if (!token) return res.status(401).json({ error: 'Not authenticated' });
 
     const decoded = verifyToken(token);
-    const { expenses } = req.body;
+    const { expenses } = req.body ?? {};
+    if (!Array.isArray(expenses)) {
+      return res.status(400).json({ error: 'expenses must be an array' });
+    }
 
-    await db.run(
+    const result = await db.run(
       'UPDATE users SET expenses = ? WHERE id = ?',
       [JSON.stringify(expenses), decoded.userId]
     );
+    if (result?.changes === 0) return res.status(404).json({ error: 'User not found' });
 
     res.json({ message: 'Expenses data saved successfully' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendRouteError(res, error, 'save expenses');
   }
 });
 
@@ -61,7 +66,7 @@ router.delete('/', async (req, res) => {
 
     res.json({ message: 'Expenses data cleared successfully' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendRouteError(res, error, 'clear expenses');
   }
 });
 

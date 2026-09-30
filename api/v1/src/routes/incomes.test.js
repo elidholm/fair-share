@@ -120,6 +120,71 @@ describe('Incomes Routes', () => {
       );
     });
 
+    it('should return 401 when the token is invalid or expired', async () => {
+      const expired = new Error('jwt expired');
+      expired.name = 'TokenExpiredError';
+      mockAuthUtils.verifyToken.mockImplementation(() => { throw expired; });
+
+      const response = await request(app)
+        .post('/')
+        .set('Cookie', 'token=expired.token.here')
+        .send({ incomes: [] });
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({ error: 'Not authenticated' });
+      expect(mockDb.run).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      ['missing', {}],
+      ['an object', { incomes: { name: 'x' } }],
+      ['a string', { incomes: 'nope' }],
+    ])('should return 400 without writing when incomes is %s', async (_label, body) => {
+      mockAuthUtils.verifyToken.mockReturnValue({ userId: 1 });
+
+      const response = await request(app)
+        .post('/')
+        .set('Cookie', 'token=valid.token.here')
+        .send(body);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'incomes must be an array' });
+      expect(mockDb.run).not.toHaveBeenCalled();
+    });
+
+    it('should return 404 when the user no longer exists', async () => {
+      mockAuthUtils.verifyToken.mockReturnValue({ userId: 999 });
+      mockDb.run.mockResolvedValue({ changes: 0 });
+
+      const response = await request(app)
+        .post('/')
+        .set('Cookie', 'token=valid.token.here')
+        .send({ incomes: [] });
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({ error: 'User not found' });
+    });
+
+    it('should log a read-only database and return a generic 500 without leaking internals', async () => {
+      const readonly = Object.assign(
+        new Error('SQLITE_READONLY: attempt to write a readonly database'),
+        { errno: 8, code: 'SQLITE_READONLY' }
+      );
+      mockAuthUtils.verifyToken.mockReturnValue({ userId: 1 });
+      mockDb.run.mockRejectedValue(readonly);
+      const logSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      const response = await request(app)
+        .post('/')
+        .set('Cookie', 'token=valid.token.here')
+        .send({ incomes: [{ name: 'A', amount: 1 }] });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Failed to save incomes' });
+      expect(logSpy).toHaveBeenCalledWith('Failed to save incomes:', readonly);
+      logSpy.mockRestore();
+    });
+
     it('should return 500 on a database error', async () => {
       mockAuthUtils.verifyToken.mockReturnValue({ userId: 1 });
       mockDb.run.mockRejectedValue(new Error('DB write failure'));

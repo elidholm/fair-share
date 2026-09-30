@@ -30,7 +30,9 @@ const FOCUSABLE =
  *
  * Accessibility: role="dialog" + aria-modal, labelled by `title`, focus moves
  * in and is trapped, Escape closes, background is made `inert` and scroll
- * locked, focus returns to the trigger. With prefers-reduced-motion,
+ * locked while open. Those are released, and focus returns to the trigger, as
+ * soon as closing starts, so input is never locked out during the exit (the
+ * departing sheet ignores pointers). With prefers-reduced-motion,
  * programmatic open/close cross-fade instead of sliding.
  */
 function Sheet({
@@ -117,10 +119,15 @@ function Sheet({
     });
   }, [open, mounted, reducedMotion, spring, measure]);
 
-  // Modal environment: inert background, scroll lock, focus in/out.
+  // Modal environment: inert background, scroll lock, focus in/out. Tied to
+  // `open`, not `mounted`, so the page is usable while the sheet animates away.
   useEffect(() => {
-    if (!mounted) return undefined;
+    if (!open) return undefined;
     const root = rootRef.current;
+    if (root) {
+      root.style.pointerEvents = "";
+      root.removeAttribute("inert");
+    }
     const previouslyFocused = document.activeElement;
     const inerted = Array.from(document.body.children).filter(
       (element) => element !== root && !element.hasAttribute("inert"),
@@ -132,6 +139,13 @@ function Sheet({
     (initialFocusRef?.current ?? panelRef.current)?.focus({ preventScroll: true });
 
     return () => {
+      // The sheet stays mounted while it animates away. `inert` keeps it out of the tab
+      // order and the accessibility tree during that interval; pointer-events alone would
+      // still let a keyboard user focus controls that are on their way out.
+      if (root) {
+        root.style.pointerEvents = "none";
+        root.setAttribute("inert", "");
+      }
       inerted.forEach((element) => element.removeAttribute("inert"));
       document.body.style.overflow = previousOverflow;
       if (previouslyFocused && typeof previouslyFocused.focus === "function") {
@@ -139,7 +153,7 @@ function Sheet({
       }
     };
     // initialFocusRef is intentionally read once, when the sheet opens.
-  }, [mounted]);
+  }, [open]);
 
   function requestClose() {
     if (dismissible) onClose?.();

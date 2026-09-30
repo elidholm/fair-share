@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db.js';
 import { verifyToken } from '../utils/auth.js';
+import { sendRouteError } from '../utils/http.js';
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.get('/', async (req, res) => {
       incomes: user.incomes ? JSON.parse(user.incomes) : []
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendRouteError(res, error, 'load incomes');
   }
 });
 
@@ -33,16 +34,20 @@ router.post('/', async (req, res) => {
     if (!token) return res.status(401).json({ error: 'Not authenticated' });
 
     const decoded = verifyToken(token);
-    const { incomes } = req.body;
+    const { incomes } = req.body ?? {};
+    if (!Array.isArray(incomes)) {
+      return res.status(400).json({ error: 'incomes must be an array' });
+    }
 
-    await db.run(
+    const result = await db.run(
       'UPDATE users SET incomes = ? WHERE id = ?',
       [JSON.stringify(incomes), decoded.userId]
     );
+    if (result?.changes === 0) return res.status(404).json({ error: 'User not found' });
 
     res.json({ message: 'Income data saved successfully' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendRouteError(res, error, 'save incomes');
   }
 });
 
@@ -61,7 +66,7 @@ router.delete('/', async (req, res) => {
 
     res.json({ message: 'Income data cleared successfully' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    sendRouteError(res, error, 'clear incomes');
   }
 });
 

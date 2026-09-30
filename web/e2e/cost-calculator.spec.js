@@ -104,6 +104,53 @@ test.describe('Cost Calculator', () => {
     await expect(shares(page).first()).toContainText('1000.00 kr (100.00%)');
   });
 
+  test('treats empty amounts as 0 but rejects unparsable ones', async ({ page }) => {
+    await setupHousehold(page, { incomeA: 3000, incomeB: 1000 });
+    await addEntry(page, 'expense', 'Gym');
+    await page.getByRole('button', { name: 'Split expenses' }).click();
+
+    await expect(page.getByLabel('Amount for Gym')).not.toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByRole('status', { name: 'Total expenses' })).toHaveText('12500 kr');
+    await expect(shares(page).first()).toContainText('9375.00 kr (75.00%)');
+
+    await page.getByLabel('Income for PersonB').fill('');
+    await expect(shares(page).first()).toContainText('12500.00 kr (100.00%)');
+    await expect(shares(page).nth(1)).toContainText('0.00 kr (0.00%)');
+
+    // "1e" is incomplete scientific notation: the browser reports it as an empty value.
+    const gym = page.getByLabel('Amount for Gym');
+    await gym.click();
+    await gym.pressSequentially('1e');
+    await expect(gym).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByText('Enter a valid amount for Gym, or remove it.')).toBeVisible();
+    await expect(shares(page)).toHaveCount(0);
+
+    await gym.pressSequentially('2');
+    await expect(gym).not.toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByRole('status', { name: 'Total expenses' })).toHaveText('12600 kr');
+  });
+
+  test('flags unparsable text typed into an already-empty amount', async ({ page }) => {
+    await setupHousehold(page, { incomeA: 3000, incomeB: 1000 });
+    await addEntry(page, 'expense', 'Gym');
+    await page.getByRole('button', { name: 'Split expenses' }).click();
+    await expect(shares(page).first()).toBeVisible();
+
+    // The field is already empty, so typing "e" leaves the value at "" and only flips
+    // validity. The change must still register, or an invalid entry silently counts as 0.
+    const gym = page.getByLabel('Amount for Gym');
+    await gym.click();
+    await gym.pressSequentially('e');
+    await expect(gym).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByText('Enter a valid amount for Gym, or remove it.')).toBeVisible();
+    await expect(shares(page)).toHaveCount(0);
+
+    // Clearing it leaves the value at "" again; the entry must become valid once more.
+    await gym.press('Backspace');
+    await expect(gym).not.toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByRole('status', { name: 'Total expenses' })).toHaveText('12500 kr');
+  });
+
   test('persists amounts between sessions', async ({ page }) => {
     await addEntry(page, 'income', 'testuser');
     await page.getByLabel('Income for testuser').fill('30000');

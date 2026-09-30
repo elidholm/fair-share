@@ -65,16 +65,59 @@ describe("Sheet", () => {
     expect(dialog).toHaveFocus();
   });
 
-  it("makes the background inert and locks scroll while open", async () => {
+  it("makes the background inert and locks scroll while open", () => {
     const { container } = render(<Harness />);
     openSheet();
     expect(container).toHaveAttribute("inert");
     expect(document.body.style.overflow).toBe("hidden");
+  });
 
-    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument(), CLOSE_TIMEOUT);
-    await waitFor(() => expect(container).not.toHaveAttribute("inert"), CLOSE_TIMEOUT);
+  it("releases the background and focus as soon as closing starts", async () => {
+    const { container } = render(<Harness />);
+    const dialog = openSheet();
+
+    fireEvent.keyDown(dialog, { key: "Escape" });
+    // The sheet is still animating away, but the page is already usable.
+    expect(screen.getByRole("dialog", { hidden: true })).toBeInTheDocument();
+    expect(container).not.toHaveAttribute("inert");
     expect(document.body.style.overflow).toBe("");
+    expect(screen.getByRole("button", { name: "Open sheet" })).toHaveFocus();
+    expect(dialog.parentElement).toHaveStyle({ pointerEvents: "none" });
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument(), CLOSE_TIMEOUT);
+  });
+
+  it("keeps the departing sheet out of reach of the keyboard while it animates away", async () => {
+    render(<Harness />);
+    const dialog = openSheet();
+
+    fireEvent.keyDown(dialog, { key: "Escape" });
+    // Still on screen during the exit animation, so pointer-events alone would leave its
+    // controls tabbable. `inert` also removes them from the tab order and a11y tree.
+    expect(dialog.parentElement).toHaveAttribute("inert");
+    expect(dialog).not.toHaveFocus();
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument(), CLOSE_TIMEOUT);
+  });
+
+  it("makes the sheet reachable again when reopened mid-close", () => {
+    render(<Harness />);
+    fireEvent.keyDown(openSheet(), { key: "Escape" });
+
+    const dialog = openSheet();
+    expect(dialog.parentElement).not.toHaveAttribute("inert");
+    expect(dialog).toHaveFocus();
+  });
+
+  it("re-locks the background when reopened mid-close", () => {
+    const { container } = render(<Harness />);
+    fireEvent.keyDown(openSheet(), { key: "Escape" });
+    expect(container).not.toHaveAttribute("inert");
+
+    const dialog = openSheet();
+    expect(container).toHaveAttribute("inert");
+    expect(dialog.parentElement).not.toHaveStyle({ pointerEvents: "none" });
+    expect(dialog).toHaveFocus();
   });
 
   it("closes on Escape and returns focus to the trigger", async () => {
