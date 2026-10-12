@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /api/
+Disallow: /budget
+Disallow: /login
+Disallow: /sign-up
