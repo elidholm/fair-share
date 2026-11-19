@@ -42,7 +42,7 @@ function openSheet() {
 
 async function openSettledSheet() {
   const dialog = openSheet();
-  await waitFor(() => expect(dialog.style.transform).toBe("translate3d(0, 0px, 0)"), CLOSE_TIMEOUT);
+  await waitFor(() => expect(dialog.style.transform).toMatch(/^translate3d\(0(?:px)?, 0(?:\.0+)?px, 0(?:px)?\)$/), CLOSE_TIMEOUT);
   return dialog;
 }
 
@@ -201,7 +201,7 @@ describe("Sheet", () => {
     const handle = screen.getByTestId("sheet-drag-handle");
     fireEvent.pointerDown(handle, { pointerId: 1, clientY: 100, button: 0, pointerType: "touch" });
     fireEvent.pointerMove(handle, { pointerId: 1, clientY: 150, pointerType: "touch" });
-    expect(dialog.style.transform).toMatch(/translate3d\(0, \d+(\.\d+)?px, 0\)/);
+    expect(dialog.style.transform).toMatch(/translate3d\(0(?:px)?, \d+(\.\d+)?px, 0(?:px)?\)/);
     fireEvent.pointerUp(handle, { pointerId: 1, clientY: 150, pointerType: "touch" });
     expect(onClose).not.toHaveBeenCalled();
   });
@@ -225,7 +225,7 @@ describe("Sheet", () => {
     const handle = screen.getByTestId("sheet-drag-handle");
     fireEvent.pointerDown(handle, { pointerId: 1, clientY: 400, button: 0, pointerType: "touch" });
     fireEvent.pointerMove(handle, { pointerId: 1, clientY: 200, pointerType: "touch" });
-    const offset = parseFloat(dialog.style.transform.match(/translate3d\(0, (-?[\d.]+)px/)[1]);
+    const offset = parseFloat(dialog.style.transform.match(/translate3d\(0(?:px)?, (-?[\d.]+)px/)[1]);
     expect(offset).toBeLessThan(0);
     expect(offset).toBeGreaterThan(-200);
   });
@@ -233,21 +233,21 @@ describe("Sheet", () => {
   it("reverses from its on-screen position when reopened mid-close", async () => {
     const { rerender } = render(<Sheet open title="Edit" onClose={() => {}} />);
     const dialog = screen.getByRole("dialog");
-    await waitFor(() => expect(dialog.style.transform).toBe("translate3d(0, 0px, 0)"), CLOSE_TIMEOUT);
+    await waitFor(() => expect(dialog.style.transform).toMatch(/^translate3d\(0(?:px)?, 0(?:\.0+)?px, 0(?:px)?\)$/), CLOSE_TIMEOUT);
 
     rerender(<Sheet open={false} title="Edit" onClose={() => {}} />);
     await waitFor(() => {
-      const offset = parseFloat(dialog.style.transform.match(/translate3d\(0, (-?[\d.]+)px/)[1]);
+      const offset = parseFloat(dialog.style.transform.match(/translate3d\(0(?:px)?, (-?[\d.]+)px/)[1]);
       expect(offset).toBeGreaterThan(20);
     }, CLOSE_TIMEOUT);
-    const midFlight = parseFloat(dialog.style.transform.match(/translate3d\(0, (-?[\d.]+)px/)[1]);
+    const midFlight = parseFloat(dialog.style.transform.match(/translate3d\(0(?:px)?, (-?[\d.]+)px/)[1]);
 
     rerender(<Sheet open title="Edit" onClose={() => {}} />);
     // Same element, no jump back to the fully-hidden position.
     expect(screen.getByRole("dialog")).toBe(dialog);
-    const afterReopen = parseFloat(dialog.style.transform.match(/translate3d\(0, (-?[\d.]+)px/)[1]);
+    const afterReopen = parseFloat(dialog.style.transform.match(/translate3d\(0(?:px)?, (-?[\d.]+)px/)[1]);
     expect(afterReopen).toBeCloseTo(midFlight, 0);
-    await waitFor(() => expect(dialog.style.transform).toBe("translate3d(0, 0px, 0)"), CLOSE_TIMEOUT);
+    await waitFor(() => expect(dialog.style.transform).toMatch(/^translate3d\(0(?:px)?, 0(?:\.0+)?px, 0(?:px)?\)$/), CLOSE_TIMEOUT);
   });
 
   it("ignores drags that start on header controls", () => {
